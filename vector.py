@@ -1,4 +1,6 @@
 import math
+
+
 class Vector:
     """
     Representa um vetor em um espaço tridimensional.
@@ -35,6 +37,12 @@ class Vector:
             self.x * vector.y - self.y * vector.x
         )
 
+    def dot_product(self, vector):
+        return self.x * vector.x + self.y * vector.y + self.z * vector.z
+
+    def scale(self, t):
+        return Vector(self.x * t, self.y * t, self.z * t)
+
     def normalize(self):
         return Vector(
             self.x / self.magnitude(),
@@ -43,7 +51,8 @@ class Vector:
         )
 
     def angle(self, vector):
-        return math.acos((self * vector) / (self.magnitude() * vector.magnitude()))
-
-
+        # Calcula o ângulo entre dois vetores usando o produto escalar
+        dot_product = self.dot_product(vector)
+        magnitudes = self.magnitude() * vector.magnitude()
+        return math.acos(dot_product / magnitudes)
 

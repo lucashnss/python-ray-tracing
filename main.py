@@ -6,8 +6,9 @@ from vector import Vector
 
 def main():
     camera = Camera(camera_point=Point(0, 0, 0), target_point=Point(0, 0, 1), vector_up=Vector(0, 1, 0), width=300, height=300)
-
     print(camera)
+    camera.ray_casting([], 2000)
+
 
 
 if __name__ == "__main__":
