@@ -22,7 +22,8 @@ class Plane:
         denominator = self.normal.dot_product(ray.direction)
         # se N * D = 0 então o raio e o plano são paralelos. 
         # 1e - 6 é um arredondamento por conta da imprecisão dos cálculos com número flutuante (1e-6 = 10-6)
-        if abs(denominator) < 1e-6:
+        epsilon = 1e-6  # Tolerância para comparação de ponto flutuante
+        if abs(denominator) < epsilon:
             return None
         
         direction = self.point - ray.origin
