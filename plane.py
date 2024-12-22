@@ -9,14 +9,27 @@ class Plane:
     def __str__(self):
         return f"Plane: {self.point} {self.normal} {self.color}"
 
-    def intersect(self, ray):
-        """Intersect Method"""
-        direction = ray.origin - self.point
-        dot_result = self.normal.dot(ray.direction)
-
-
-
     def __normal__(self, point):
         """Normal Method"""
         return self.normal
-
+    
+    def intersect(self, ray):
+        """Intersect Method"""
+        # Intersecção de raio com plano é dado por 
+        # t = N * (Po - O)/ N * D
+        # equação paramétrica do raio: R(t) = O + t * D 
+        # equação do plano: N * (P - Po) = 0 ->  N * P = N * Po
+        denominator = self.normal.dot_product(ray.direction)
+        # se N * D = 0 então o raio e o plano são paralelos. 
+        # 1e - 6 é um arredondamento por conta da imprecisão dos cálculos com número flutuante (1e-6 = 10-6)
+        if abs(denominator) < 1e-6:
+            return None
+        
+        direction = self.point - ray.origin
+        t = self.normal.dot_product(direction)/denominator
+        # Caso em que a intersecção ocorre atrás da câmera
+        if t < 0:
+            return None
+        
+        # Ponto de intersecção
+        return ray.origin + ray.direction.scale(t)

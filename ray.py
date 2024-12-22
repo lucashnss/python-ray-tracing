@@ -7,8 +7,8 @@ class Ray:
         origin, direction
     """
 
-    def __init__(self, origin: "Point", direction: "Vector"):
+    def __init__(self, origin: Point, direction: Vector):
         """Initialize the Ray"""
         self.origin = origin
-        self.direction = direction
+        self.direction = direction.normalize()
 
