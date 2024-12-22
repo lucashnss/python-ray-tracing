@@ -41,4 +41,12 @@ class Sphere:
             # Se delta > 0 o raio intersecta a esfera em dois ponto
             t1 = (-b + math.sqrt(discriminant)) / (2.0 * a)
             t2 = (-b - math.sqrt(discriminant)) / (2.0 * a)
-            return t1, t2 
+            # Escolher o menor t positivo para retornar ao Ray Tracing
+            if t1 > 0 and t2 > 0:
+                return min(t1,t2)
+            elif t1 > 0:
+                return t1
+            elif t2 > 0:
+                return t2
+            else:
+                return None     # Ambas as intersecções estão atrás da câmera
