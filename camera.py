@@ -37,9 +37,9 @@ class Camera:
         x = (2 * (pixel_x + 0.5) / self.hres - 1) * aspect_ratio   # ajusta a posição do pixel para que esteja centrado no meio do pixel e mantém no intervalo [-1,+1]
         y = 1 - 2 * (pixel_y + 0.5) / self.vres                    # centraliza o pixel e mantém no intervalo [-1,+1]
         direction = (
-            self.w * self.target_distance   # Representa o ponto central do plano de projeção
-            + self.v * x                    # Adiciona um deslocamento horizontal ao ponto no plano de projeção
-            + self.u * y                    # Adciona um deslocamento vertical ao ponto no plano de projeção
+            self.w.scale(self.target_distance)  # Representa o ponto central do plano de projeção
+            + self.v.scale(x)                   # Adiciona um deslocamento horizontal ao ponto no plano de projeção
+            + self.u.scale(y)                 # Adciona um deslocamento vertical ao ponto no plano de projeção
         ).normalize()
         return Ray(self.camera_point, direction)
 

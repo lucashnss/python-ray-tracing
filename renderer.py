@@ -32,6 +32,6 @@ class Renderer:
             t = obj.intersect(ray)
             if t and t < closest_t:
                 closest_t = t
-                closest_color = object.color
+                closest_color = obj.color
 
-        return closest_color    # 
+        return closest_color    

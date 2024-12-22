@@ -33,4 +33,4 @@ class Plane:
             return None
         
         # Ponto de intersecção
-        return ray.origin + ray.direction.scale(t)
+        return t if t > 0 else None # Apenas intersecções na frente da câmera
