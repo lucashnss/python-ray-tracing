@@ -42,5 +42,3 @@ class Sphere:
             t1 = (-b + math.sqrt(discriminant)) / (2.0 * a)
             t2 = (-b - math.sqrt(discriminant)) / (2.0 * a)
             return t1, t2 
-
-

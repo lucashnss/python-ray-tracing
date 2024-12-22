@@ -11,4 +11,3 @@ class Ray:
         """Initialize the Ray"""
         self.origin = origin
         self.direction = direction.normalize()
-
