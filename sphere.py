@@ -28,7 +28,7 @@ class Sphere:
         c = oc.dot_product(oc) - self.radius * self.radius
         discriminant = (b * b) - (4 * a * c)
 
-        epsilon = 1e-6  # Tolerância para comparação de ponto flutuante
+        epsilon = 1e-8  # Tolerância para comparação de ponto flutuante
         # Pontos de intersecção
         # Nesse caso não há intersecção entre o raio e a esfera
         if discriminant < 0:
