@@ -11,7 +11,7 @@ class Renderer:
         self.hres = hres
         self.vres = vres
         self.image = np.zeros((vres,hres,3), dtype=np.uint8)
-    
+
     def render(self):
         for i in range(self.vres):
             for j in range(self.hres):
@@ -30,8 +30,9 @@ class Renderer:
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
             t = obj.intersect(ray)
+
             if t and t < closest_t:
                 closest_t = t
                 closest_color = obj.color
 
-        return closest_color    
+        return closest_color
