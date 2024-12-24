@@ -34,8 +34,8 @@ class Camera:
         aspect_ratio = self.hres / self.vres
         # Coordenadas normalizadas do pixel em relação ao plano de projeção da câmera
         # canto esquerdo: x = -1 canto direito: x = 1 canto inferior : y = -1 canto superior : y = +1
-        x = (2 * (pixel_x + 0.5) / self.hres - 1) * aspect_ratio   # ajusta a posição do pixel para que esteja centrado no meio do pixel e mantém no intervalo [-1,+1]
-        y = 1 - 2 * (pixel_y + 0.5) / self.vres                    # centraliza o pixel e mantém no intervalo [-1,+1]
+        x = -(2 * (pixel_x + 0.5) / self.hres - 1) * aspect_ratio   # ajusta a posição do pixel para que esteja centrado no meio do pixel e mantém no intervalo [-1,+1]
+        y = 1 - 2 * (pixel_y + 0.5) / self.vres                   # centraliza o pixel e mantém no intervalo [-1,+1]
         direction = (
             self.w.scale(self.target_distance)  # Representa o ponto central do plano de projeção
             + self.v.scale(x)                   # Adiciona um deslocamento horizontal ao ponto no plano de projeção
