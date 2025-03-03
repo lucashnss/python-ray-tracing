@@ -14,11 +14,13 @@ class Renderer:
 
     def render(self):
         for i in range(self.vres):
+            print(f"{(i/self.vres)*100:.2f}%")
             for j in range(self.hres):
                 ray = self.camera.generate_ray(j,i)
                 color = self.trace_ray(ray)
                 self.image[i,j] = color  # A matriz numpy por padrão é image[índice linha, índice coluna]
 
+        print('100.00% - Concluído!')
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows("e")
