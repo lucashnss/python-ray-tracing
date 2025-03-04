@@ -7,11 +7,11 @@ from vector import Vector
 
 
 class Mesh:
-    def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list, normal_list: List[Vector], vertices_normal_list, colors_normalized_list, color):
+    def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list, normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color):
         self.n_triangles = n_triangles
         self.n_vertices = n_vertices
         self.vertice_list = vertice_list
-        self.triples = triples_list
+        self.triples_list = triples_list
         self.normal_list = normal_list
         self.vertices_normal_list = vertices_normal_list
         self.colors_normalized_list = colors_normalized_list
@@ -25,21 +25,18 @@ class Mesh:
         [v0, v1, v2] = vertices
         a0: Vector = v1 -  v0 # aresta 0 (vetor)
         a1: Vector = v2 - v0 # aresta 1 (vetor)
-
-        plane = Plane(v0, triangle_normal, (0, 0, 255)) # plano do triângulo
+        normal = a0.cross_product(a1)
+        plane = Plane(v0, normal, (0, 0, 255)) # plano do triângulo
         t = plane.intersect(ray)
 
     # intersecção do raio com o plano
         if t is None:
             return None
 
-
         P =  ray.origin + ray.direction.scale(t)
         S = P - v0
 
         M = np.array([[a0.x, a1.x], [a0.y, a1.y]])
-
-
 
         barycentric_coords = np.linalg.solve(M, [S.x, S.y])
 
@@ -53,11 +50,17 @@ class Mesh:
 
     def intersect(self, ray: Ray):
 
+        closest_t = float('inf')
+        for index in range(self.n_triangles):
 
-        vertices = [self.vertice_list[i] for i in self.triples[0]]
+            triple = self.triples_list[index]
+            vertices = [self.vertice_list[i] for i in triple]
 
-        t = self.intersect_triangle_plane(vertices, ray, self.normal_list[0])
+            t = self.intersect_triangle_plane(vertices, ray, self.normal_list[index])
+            color = self.colors_normalized_list[index]
+            if t and t < closest_t:
+                self.color = color
+                closest_t = t
 
 
-        if t is not None:
-            return t
+        return closest_t

@@ -14,6 +14,7 @@ class Renderer:
 
     def render(self):
         for i in range(self.vres):
+
             print(f"{(i/self.vres)*100:.2f}%")
             for j in range(self.hres):
                 ray = self.camera.generate_ray(j,i)
@@ -34,6 +35,7 @@ class Renderer:
             t = obj.intersect(ray)
 
             if t and t < closest_t:
+
                 closest_t = t
                 closest_color = obj.color
 
