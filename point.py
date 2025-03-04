@@ -1,3 +1,4 @@
+import numpy as np
 from vector import Vector
 
 class Point:
@@ -29,3 +30,6 @@ class Point:
 
     def distance(self, point):
         return ((self.x - point.x) ** 2 + (self.y - point.y) ** 2 + (self.z - point.z) ** 2) ** 0.5
+
+    def array(self):
+        return np.array([self.x, self.y, self.z])

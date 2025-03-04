@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 
 class Vector:
     """
@@ -56,3 +58,5 @@ class Vector:
         magnitudes = self.magnitude() * vector.magnitude()
         return math.acos(dot_product / magnitudes)
 
+    def array(self):
+        return np.array([self.x, self.y, self.z])

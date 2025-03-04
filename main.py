@@ -1,3 +1,4 @@
+from mesh import Mesh
 from obj_reader import ObjReader
 from camera import Camera
 from renderer import Renderer
@@ -20,7 +21,7 @@ def main():
         hres=500,
         vres=500
     )
-    print(camera)
+
 
     # Criar objetos
 
@@ -40,12 +41,17 @@ def main():
     plane8 = Plane(point=Point(0, 0, 6), normal=Vector(0, 0, -1), color=(255,255,255))
 
 
+    triangle = Mesh(n_triangles=1, n_vertices=3, vertice_list=[Point(5, 0, 0), Point(0, 5, 0) ,Point(-5, -5, 0) ], triples_list=[(0, 1, 2)], normal_list=[Vector(0, 0, 1)], vertices_normal_list=[Vector(0, 0, 1), Vector(0, 0, 1), Vector(0, 0, 1)], colors_normalized_list=[(0,255,0)], color=(0,255,0))
 
 
-    # Renderizar a cena
-    objects = [sphere4, sphere5, sphere6, plane3, plane4, plane5, plane6, plane7, plane8]
+
+
+
+
+    objects = [triangle, sphere6]
     renderer = Renderer(camera, objects, hres=500, vres=500)
     renderer.render()
+
 
 
 if __name__ == "__main__":

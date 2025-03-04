@@ -18,13 +18,13 @@ class Plane:
         # Intersecção de raio com plano é dado por
         # t = N * (Po - O)/ N * D
         # equação paramétrica do raio: R(t) = O + t * D
-        # equação do plano: N * (P - Po) = 0 ->  N * P = N * Po
+        # equação do plano: N • (P - Po) = 0 ->  N • P = N • Po
         # Desenvolvimento
-        # N * (O + t * D) = N * Po
-        # N * O + N * t * D = N * Po
-        # t = N * Po - N * O/  N * D
-        # t = N * (Po - O)/ (N * D)
-        denominator = self.normal.dot_product(ray.direction) # N * D
+        # N • (O + t * D) = N • Po
+        # N • O + N • t * D = N • Po
+        # t = N • Po - N • O/  N • D
+        # t = N • (Po - O)/ (N • D)
+        denominator = self.normal.dot_product(ray.direction) # N • D
 
         # se N * D = 0 então o raio e o plano são paralelos.
         # 1e - 6 é um arredondamento por conta da imprecisão dos cálculos com número flutuante (1e-6 = 10-6)
