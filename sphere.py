@@ -2,7 +2,8 @@ import math
 from point import Point
 
 class Sphere:
-    def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
+    def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, 
+                refraction_index, n):
         self.center = center
         self.radius = radius
         self.color = color
@@ -13,8 +14,6 @@ class Sphere:
         self.k_refraction = k_refraction
         self.IOR = refraction_index
         self.n = n
-
-
 
     def __str__(self):
         return f"Sphere: {self.center} {self.radius} {self.color}"
@@ -31,7 +30,6 @@ class Sphere:
         # A = dx**2 + dy**2 + dz**2
         # B = 2 ((ox - cx)*dx + (oy - cy)*dy + (oz - cz)*dz )
         # C = (ox - cx)**2 + (oy - cy)**2 + (oz - cz)**2 - r**2
-
 
         oc = ray.origin - self.center #  (ox - cx, oy - cy, oz - cz)
         a = ray.direction.dot_product(ray.direction) # dx**2 + dy**2 + dz**2

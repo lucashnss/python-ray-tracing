@@ -46,4 +46,3 @@ def rotate_z(angle: float):
                     [math.sin(angle), math.cos(angle), 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, 1]])
-
