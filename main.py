@@ -37,7 +37,7 @@ def main():
                                   Point(-5,5,-15), ],
                     triples_list=[(0, 1, 2),
                                   (2, 3, 4),
-                                  (5, 6, 7)],
+                                  (0, 3, 7)],
                     normal_list=[Vector(0, 0, 1),
                                  Vector(0, 0, 1),
                                  Vector(0, 0, 1),
@@ -45,12 +45,12 @@ def main():
                     vertices_normal_list=[Vector(0, 0, 1), Vector(0, 0, 1), Vector(0, 0, 1)],
                     colors_normalized_list=[(0,255,0), (255,255,0), (0,255,255)], color=(255,255,255))
 
-    matrix = translate(-6, -5, 0)
+    matrix = translate(-10, -10, 0)
 
     triangleTransformed = apply_affine_transformation(triangle, matrix)
     for vertex in triangleTransformed.vertice_list:
         print(f"vertex {vertex.array()}")
-    objects = [ triangleTransformed]
+    objects = [ triangleTransformed, triangle]
     renderer = Renderer(camera, objects, hres=500, vres=500)
     renderer.render()
 

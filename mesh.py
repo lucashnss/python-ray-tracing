@@ -37,13 +37,15 @@ class Mesh:
             return None
 
         P =  ray.origin + ray.direction.scale(t)
-        S = P - v0
+        a2 = P - v0
 
-        M = np.array([[a0.x, a1.x], [a0.y, a1.y]])
+        # Construindo a matriz e o vetor para resolver o sistema linear
+        M = np.array([[a0.dot_product(a0), a0.dot_product(a1)],
+                    [a0.dot_product(a1), a1.dot_product(a1)]])
+        b = np.array([a2.dot_product(a0), a2.dot_product(a1)])
 
-
-        barycentric_coords = np.linalg.solve(M, [S.x, S.y])
-
+        # Resolvendo o sistema linear M * [v, w] = b
+        barycentric_coords = np.linalg.solve(M, b)
 
 
         alpha, beta = barycentric_coords
@@ -78,11 +80,3 @@ def apply_affine_transformation(mesh: Mesh, transformation_matrix: np.ndarray) -
 
     return Mesh(mesh.n_triangles, mesh.n_vertices, vertice_list_transformed.copy(), mesh.triples_list, mesh.normal_list,
                 mesh.vertices_normal_list, mesh.colors_normalized_list, mesh.color)
-
-
-
-
-
-
-
-
