@@ -8,9 +8,6 @@ from sphere import Sphere
 from plane import Plane
 
 # Divirtam-se :)
-
-
-
 def main():
     # Configurações de câmera
     camera = Camera(
@@ -21,9 +18,6 @@ def main():
         hres=500,
         vres=500
     )
-
-
-
 
     sphere = Sphere(center=Point(-3, -3.5, -2), radius=1.5, color=(255,0,0))
 
@@ -47,16 +41,9 @@ def main():
                     vertices_normal_list=[Vector(0, 0, 1), Vector(0, 0, 1), Vector(0, 0, 1)],
                     colors_normalized_list=[(0,255,0), (255,255,0), (0,255,255)], color=(255,255,255))
 
-
-
-
-
-
     objects = [triangle, sphere]
     renderer = Renderer(camera, objects, hres=500, vres=500)
     renderer.render()
-
-
 
 if __name__ == "__main__":
     main()
