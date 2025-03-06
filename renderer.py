@@ -26,6 +26,31 @@ class Renderer:
         cv.waitKey(0)
         cv.destroyAllWindows("e")
 
+    def phong(self, ka, Ia, Il, kd, Od, N, L, ks, R, V, n):
+        """
+            ka (entre 0 e 1): coeficiente ambiental
+            Ia (conjunto RGB do tipo [[0,255],[0,255], [0,255]]): cor da luz ambiental
+            Il (array de RGBs do tipo [[0,255], [0,255], [0,255],  ...]) = array com as luzes do ambiente
+            kd (entre 0 e 1): coeficiente de difusão do objeto
+            Od (conjunto RGB do tipo [[0,255],[0,255], [0,255]]): conjunto RGB que representa a cor do objeto
+
+        """
+        # Componente Ambiental
+        environmental_component = ka * Ia
+
+        diffuse_component = np.zeros(3)
+        specular_component = np.zeros(3)
+
+        for i in range(len(Il)):
+            # Cálculo da componente difusa e da componente especular
+            diffuse_component += kd * Il[i] * np.maximum(0, np.dot(N, L[i]))
+            specular_component += ks * Il[i] * np.maximum(0, np.dot(R[i], V)**n)
+
+        final_color = environmental_component + diffuse_component + specular_component
+        final_color = np.clip(final_color * Od/255, final_color * Od/255, final_color * Od/255)
+
+        return final_color
+
     def trace_ray(self, ray):
         # Inicia a cor como preto, assumindo que, inicialmente, o raio não acerta nenhum objeto
         closest_t = float('inf')        # Qualquer distância válida será menor que infinito

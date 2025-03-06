@@ -2,10 +2,19 @@ import math
 from point import Point
 
 class Sphere:
-    def __init__(self, center: "Point", radius, color):
+    def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
         self.center = center
         self.radius = radius
         self.color = color
+        self.k_ambient = k_ambient
+        self.k_diffuse = k_diffuse
+        self.k_specular = k_specular
+        self.k_reflection = k_reflection
+        self.k_refraction = k_refraction
+        self.IOR = refraction_index
+        self.n = n
+
+
 
     def __str__(self):
         return f"Sphere: {self.center} {self.radius} {self.color}"
