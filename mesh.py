@@ -23,8 +23,11 @@ class Mesh:
 
     def intersect_triangle_plane(self, vertices: List[Point], ray: Ray, triangle_normal: Vector):
         [v0, v1, v2] = vertices
+
         a0: Vector = v1 -  v0 # aresta 0 (vetor)
         a1: Vector = v2 - v0 # aresta 1 (vetor)
+
+
         normal = a0.cross_product(a1)
         plane = Plane(v0, normal, (0, 0, 255)) # plano do triângulo
         t = plane.intersect(ray)
@@ -38,7 +41,10 @@ class Mesh:
 
         M = np.array([[a0.x, a1.x], [a0.y, a1.y]])
 
+
         barycentric_coords = np.linalg.solve(M, [S.x, S.y])
+
+
 
         alpha, beta = barycentric_coords
         gamma = 1 - alpha - beta
@@ -62,5 +68,21 @@ class Mesh:
                 self.color = color
                 closest_t = t
 
-
         return closest_t
+
+def apply_affine_transformation(mesh: Mesh, transformation_matrix: np.ndarray) -> Mesh:
+    vertice_list_transformed: List[Point] = []
+    for vertex in mesh.vertice_list:
+        result = np.matmul(transformation_matrix, [vertex.x, vertex.y, vertex.z, 1])
+        vertice_list_transformed.append(Point(result[0], result[1], result[2]))
+
+    return Mesh(mesh.n_triangles, mesh.n_vertices, vertice_list_transformed.copy(), mesh.triples_list, mesh.normal_list,
+                mesh.vertices_normal_list, mesh.colors_normalized_list, mesh.color)
+
+
+
+
+
+
+
+
