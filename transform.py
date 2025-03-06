@@ -21,6 +21,8 @@ def affine_transform(vector, transform_type="", x=0, y=0, z=0, angle=0):
     result_to_return = np.array([result[0], result[1], result[2]])
     print(f'{vector} => {result_to_return}')
 
+    return result_to_return
+
 def translate(x:float, y:float, z: float):
     return np.array([[1, 0, 0, x],
                     [0, 1, 0, y],

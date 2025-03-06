@@ -1,10 +1,17 @@
 class Plane:
     """Plane Class"""
 
-    def __init__(self, point, normal, color):
+    def __init__(self, point, normal, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
         self.point = point # Ponto no plano
         self.normal = normal # Vetor normal do plano
         self.color = color # Cor do plano
+        self.k_ambient = k_ambient
+        self.k_diffuse = k_diffuse
+        self.k_specular = k_specular
+        self.k_reflection = k_reflection
+        self.k_refraction = k_refraction
+        self.IOR = refraction_index
+        self.n = n
 
     def __str__(self):
         return f"Plane: {self.point} {self.normal} {self.color}"

@@ -7,7 +7,9 @@ from vector import Vector
 
 
 class Mesh:
-    def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list, normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color):
+    def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list,
+                 normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color,
+                 k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
         self.n_triangles = n_triangles
         self.n_vertices = n_vertices
         self.vertice_list = vertice_list
@@ -16,6 +18,13 @@ class Mesh:
         self.vertices_normal_list = vertices_normal_list
         self.colors_normalized_list = colors_normalized_list
         self.color = color
+        self.k_ambient = k_ambient
+        self.k_diffuse = k_diffuse
+        self.k_specular = k_specular
+        self.k_reflection = k_reflection
+        self.k_refraction = k_refraction
+        self.IOR = refraction_index
+        self.n = n
 
     def __str__(self):
         return f"Mesh: {self.n_triangles}, {self.n_vertices}, {self.vertice_list}, {self.triples}, {self.normal_list}, {self.vertices_normal_list}, {self.colors_normalized_list}"
