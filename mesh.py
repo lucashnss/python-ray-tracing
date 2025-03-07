@@ -67,10 +67,10 @@ class Mesh:
         return None  # Interseção fora do triângulo
 
     def intersect(self, ray: Ray):
-
         closest_t = float('inf')
-        for index in range(self.n_triangles):
+        closest_normal = None # Armazenará a normal do triângulo mais próximo
 
+        for index in range(self.n_triangles):
             triple = self.triples_list[index]
             vertices = [self.vertice_list[i] for i in triple]
 
@@ -79,8 +79,9 @@ class Mesh:
             if t and t < closest_t:
                 self.color = color
                 closest_t = t
+                closest_normal = self.normal_list[index] # Armazena a normal do triângulo intersecionado
 
-        return closest_t
+        return closest_t, closest_normal
 
 def apply_affine_transformation(mesh: Mesh, transformation_matrix: np.ndarray) -> Mesh:
     vertice_list_transformed: List[Point] = []

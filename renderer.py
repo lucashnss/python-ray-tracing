@@ -18,7 +18,6 @@ class Renderer:
 
     def render(self):
         for i in range(self.vres):
-
             print(f"{(i/self.vres)*100:.2f}%")
             for j in range(self.hres):
                 ray = self.camera.generate_ray(j,i)
@@ -86,6 +85,10 @@ class Renderer:
                     # Cálculo do vetor normal do ponto 
                     intersection_point = ray.origin + ray.direction * t
                     normal_vector = obj.normal
+                    # Verificação se a normal aponta para a direção certa
+                    cos = np.dot(normal_vector, ray.direction)
+                    if cos < 0:
+                        normal_vector = normal_vector * -1
 
                     # Definindo e normalizando os vetores dos arrays:
                     for i in range(len(light_points_arr)):
@@ -111,8 +114,38 @@ class Renderer:
                     closest_color = final_color
             # Se o objeto for uma malha
             elif obj.type == "Mesh":
-                pass
+                t, normal_vector = obj.intersect(ray)
 
-        
+                if t and t < closest_t:
+                    closest_t = t
+                    # Cálculo do vetor normal do ponto 
+                    intersection_point = ray.origin + ray.direction * t
+                    # Verificação se a normal aponta para a direção certa
+                    cos = np.dot(normal_vector, ray.direction)
+                    if cos < 0:
+                        normal_vector = normal_vector * -1
 
+                    # Definindo e normalizando os vetores dos arrays:
+                    for i in range(len(light_points_arr)):
+                        light_vector = normalize(light_points_arr[i] - intersection_point)
+                        light_vectors_arr.append(light_vector)
+                        reflected_vector = normalize(2 * np.dot(normal_vector, light_vector) * normal_vector - light_vector)
+                        R_arr.append(reflected_vector)
+
+                    # Cálculo da cor do pixel
+                    final_color = phong(
+                        ka=obj.k_ambient,
+                        Ia=ambiental_color_light,
+                        Il=Il,
+                        kd=obj.k_diffuse,
+                        Od=obj.color,
+                        N=normal_vector,
+                        L=light_vectors_arr,
+                        R=R_arr,
+                        V=normalize(ray.origin - intersection_point),
+                        n=obj.n
+                    )
+                    # Atualizando a cor mais próxima
+                    closest_color = final_color
+                
         return closest_color
