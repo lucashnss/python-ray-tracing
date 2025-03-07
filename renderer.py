@@ -5,6 +5,9 @@ from sphere import Sphere
 from plane import Plane
 from phong import phong
 
+def normalize(vector):
+    return vector / np.linalg.norm(vector)
+
 class Renderer:
     def __init__(self, camera: Camera, objects: Sphere | Plane, hres:int, vres:int):
         self.camera = camera
@@ -44,7 +47,36 @@ class Renderer:
 
             #  Se o objeto for uma esfera
             if obj.type == "Sphere":
-                pass
+                t = obj.intersect(ray)
+
+                if t and t < closest_t:
+                    closest_t = t
+                    # Cálculo do vetor normal do ponto 
+                    intersection_point = ray.origin + ray.direction * t
+                    normal_vector = normalize(intersection_point - obj.center)
+
+                    # Definindo e normalizando os vetores dos arrays:
+                    for i in range(len(light_points_arr)):
+                        light_vector = normalize(light_points_arr[i] - intersection_point)
+                        light_vectors_arr.append(light_vector)
+                        reflected_vector = normalize(2 * np.dot(normal_vector, light_vector) * normal_vector - light_vector)
+                        R_arr.append(reflected_vector)
+
+                    # Cálculo da cor do pixel
+                    final_color = phong(
+                        ka=obj.k_ambient,
+                        Ia=ambiental_color_light,
+                        Il=Il,
+                        kd=obj.k_diffuse,
+                        Od=obj.color,
+                        N=normal_vector,
+                        L=light_vectors_arr,
+                        R=R_arr,
+                        V=normalize(ray.origin - intersection_point),
+                        n=obj.n
+                    )
+                    # Atualizando a cor mais próxima
+                    closest_color = final_color
             # Se o objeto for um plano
             elif obj.type == "Plane":
                 pass
@@ -52,11 +84,6 @@ class Renderer:
             elif obj.type == "Mesh":
                 pass
 
-            t = obj.intersect(ray)
-
-            if t and t < closest_t:
-
-                closest_t = t
-                closest_color = obj.color
+        
 
         return closest_color
