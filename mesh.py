@@ -10,6 +10,7 @@ class Mesh:
     def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list,
                  normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color,
                  k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
+        self.type =  "Mesh"
         self.n_triangles = n_triangles
         self.n_vertices = n_vertices
         self.vertice_list = vertice_list

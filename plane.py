@@ -2,6 +2,7 @@ class Plane:
     """Plane Class"""
 
     def __init__(self, point, normal, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
+        self.type = "Plane"
         self.point = point # Ponto no plano
         self.normal = normal # Vetor normal do plano
         self.color = color # Cor do plano

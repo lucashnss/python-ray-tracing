@@ -33,6 +33,25 @@ class Renderer:
         closest_color = (0,0,0)
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
+            light_points_arr = np.array([np.array([0,0,0])]) # Fontes de luz
+
+            # Parâmetros de Phong
+            ambiental_color_light = np.array([255,255,255])
+            Il = [np.array([255,255,255])]
+
+            R_arr = [] # Inicilializando vetores de reflexão
+            light_vectors_arr = [] # Inicializando array de vetores para luz
+
+            #  Se o objeto for uma esfera
+            if obj.type == "Sphere":
+                pass
+            # Se o objeto for um plano
+            elif obj.type == "Plane":
+                pass
+            # Se o objeto for uma malha
+            elif obj.type == "Mesh":
+                pass
+
             t = obj.intersect(ray)
 
             if t and t < closest_t:

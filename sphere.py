@@ -4,6 +4,7 @@ from point import Point
 class Sphere:
     def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, 
                 refraction_index, n):
+        self.type = "Sphere"
         self.center = center
         self.radius = radius
         self.color = color
