@@ -8,6 +8,12 @@ from phong import phong
 from point import Point
 
 class Renderer:
+    """
+        Classe que representa o renderizador.
+        Argumentos:
+        camera: câmera
+        objects: objetos a serem renderizados
+    """
     def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh):
         self.camera = camera
         self.objects = objects

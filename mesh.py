@@ -7,6 +7,25 @@ from vector import Vector
 
 
 class Mesh:
+    """
+        Classe que representa uma malha poligonal.
+        Argumentos: 
+        n_triangles: número de triângulos
+        n_vertices: número de vértices
+        vertice_list: lista de vértices
+        triples_list: lista de triplas de vértices
+        normal_list: lista de normais
+        vertices_normal_list: lista de normais de vértices
+        colors_normalized_list: lista de cores normalizadas
+        color: cor do objeto
+        k_ambient: coeficiente de reflexão ambiente
+        k_diffuse: coeficiente de reflexão difusa
+        k_specular: coeficiente de reflexão especular
+        k_reflection: coeficiente de reflexão
+        k_refraction: coeficiente de refração
+        refraction_index: índice de refração
+        n: expoente de Phong
+    """
     def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list,
                  normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color,
                  k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):

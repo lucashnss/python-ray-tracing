@@ -22,8 +22,8 @@ def main():
 
     # Configurações das esferas
     sphere1 = Sphere(
-        center=Point(-1.5, 0, -1),
-        radius=0.5,
+        center=Point(-2.5, 0, -1),
+        radius=2,
         color=np.array([255, 0, 0]),
         k_ambient=0.2,
         k_diffuse=0.7,
@@ -35,8 +35,8 @@ def main():
     )
 
     sphere2 = Sphere(
-        center=Point(1.5, 0, -1),
-        radius=0.5,
+        center=Point(2, 0, -1),
+        radius=2.5,
         color=np.array([0, 0, 255]),
         k_ambient=0.2,
         k_diffuse=0.7,
@@ -45,6 +45,20 @@ def main():
         k_refraction=0.0,
         refraction_index=1.0,
         n=30
+    )
+
+    # Configurações do plano
+    plane = Plane(
+        point=Point(0, -1, 0),
+        normal=Vector(0, 1, 0),
+        color=np.array([0, 255, 0]),
+        k_ambient=0.2,
+        k_diffuse=0.8,
+        k_specular=0.1,
+        k_reflection=0.2,
+        k_refraction=0.0,
+        refraction_index=1.0,
+        n=20
     )
 
     # mesh = Mesh(
@@ -97,7 +111,7 @@ def main():
     # for vertex in triangleTransformed.vertice_list:
         # print(f"vertex {vertex.array()}")
 
-    objects = [sphere1, sphere2] 
+    objects = [sphere1, sphere2, plane] 
     renderer = Renderer(camera, objects)
     renderer.render()
 
