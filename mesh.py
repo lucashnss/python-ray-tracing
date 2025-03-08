@@ -75,8 +75,6 @@ class Mesh:
 
         # Resolvendo o sistema linear M * [v, w] = b
         barycentric_coords = np.linalg.solve(M, b)
-
-
         alpha, beta = barycentric_coords
         gamma = 1 - alpha - beta
 
