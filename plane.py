@@ -1,5 +1,18 @@
 class Plane:
-    """Plane Class"""
+    """
+        Representa um plano em um espaço tridimensional.
+        Atributos:
+            point (Point): Ponto no plano.
+            normal (Vector): Vetor normal do plano.
+            color (tuple): Cor do plano.
+            k_ambient (float): Coeficiente de reflexão ambiental.
+            k_diffuse (float): Coeficiente de reflexão difusa.
+            k_specular (float): Coeficiente de reflexão especular.
+            k_reflection (float): Coeficiente de reflexão.
+            k_refraction (float): Coeficiente de refração.
+            refraction_index (float): Índice de refração.
+            n (int): Expoente da componente especular.
+    """
 
     def __init__(self, point, normal, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
         self.type = "Plane"
@@ -17,7 +30,7 @@ class Plane:
     def __str__(self):
         return f"Plane: {self.point} {self.normal} {self.color}"
 
-    def __normal__(self, point):
+    def normal(self, point):
         """Normal Method"""
         return self.normal
 

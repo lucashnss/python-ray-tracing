@@ -1,7 +1,5 @@
 import math
-
 import numpy as np
-
 
 class Vector:
     """
@@ -25,12 +23,23 @@ class Vector:
 
     def __sub__(self, vector):
         return Vector(self.x - vector.x, self.y - vector.y, self.z - vector.z)
+    
+    def __mul__(self, scalar):
+        return Vector(self.x * scalar, self.y * scalar, self.z * scalar)
+
+    def __rmul__(self, scalar):
+        """Permite a multiplicação por escalar à esquerda (escalar * vetor)."""
+        return self.__mul__(scalar)
 
     def magnitude(self):
         return (self.x**2 + self.y**2 + self.z**2) ** 0.5
 
     def normalize(self):
-        return Vector(self.x / self.magnitude(), self.y / self.magnitude(), self.z / self.magnitude())
+        mag = self.magnitude()
+        if mag == 0:
+            return Vector(0, 0, 0)
+        else:
+            return Vector(self.x / mag, self.y / mag, self.z / mag)
 
     def cross_product(self, vector):
         return Vector(
@@ -44,13 +53,6 @@ class Vector:
 
     def scale(self, t):
         return Vector(self.x * t, self.y * t, self.z * t)
-
-    def normalize(self):
-        return Vector(
-            self.x / self.magnitude(),
-            self.y / self.magnitude(),
-            self.z / self.magnitude()
-        )
 
     def angle(self, vector):
         # Calcula o ângulo entre dois vetores usando o produto escalar

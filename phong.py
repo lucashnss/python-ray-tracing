@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def phong(ka, Ia, Il, kd, Od, N, L, ks, R, V, n):
     """
         ka (entre 0 e 1): coeficiente ambiental
@@ -31,8 +30,8 @@ def phong(ka, Ia, Il, kd, Od, N, L, ks, R, V, n):
 
     for i in range(len(Il)):
         # Cálculo da componente difusa e da componente especular
-        diffuse_component += kd * Il[i] * np.maximum(0, np.dot(N, L[i])) * Od
-        specular_component += ks * Il[i] * np.maximum(0, np.dot(R[i], V)**n)
+        diffuse_component += kd * Il[i] * max(0, N.dot_product(L[i])) * Od
+        specular_component += ks * Il[i] * max(0, (R[i].dot_product(V))**n)
 
     final_color = environmental_component + diffuse_component + specular_component
     final_color = np.clip(final_color, 0, 1) * 255

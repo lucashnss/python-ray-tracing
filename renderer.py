@@ -2,19 +2,18 @@ import numpy as np
 import cv2 as cv
 from camera import Camera
 from sphere import Sphere
+from mesh import Mesh
 from plane import Plane
 from phong import phong
-
-def normalize(vector):
-    return vector / np.linalg.norm(vector)
+from point import Point
 
 class Renderer:
-    def __init__(self, camera: Camera, objects: Sphere | Plane, hres:int, vres:int):
+    def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh):
         self.camera = camera
         self.objects = objects
-        self.hres = hres
-        self.vres = vres
-        self.image = np.zeros((vres,hres,3), dtype=np.uint8)
+        self.hres = camera.hres
+        self.vres = camera.vres
+        self.image = np.zeros((self.vres,self.hres,3), dtype=np.uint8)
 
     def render(self):
         for i in range(self.vres):
@@ -27,19 +26,19 @@ class Renderer:
         print('100.00% - Concluído!')
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
-        cv.destroyAllWindows("e")
+        cv.destroyAllWindows()
 
     def trace_ray(self, ray):
         # Inicia a cor como preto, assumindo que, inicialmente, o raio não acerta nenhum objeto
         closest_t = float('inf')        # Qualquer distância válida será menor que infinito
-        closest_color = (0,0,0)
+        closest_color = np.array([0,0,0])
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
-            light_points_arr = np.array([np.array([0,0,0])]) # Fontes de luz
+            light_points_arr = [Point(0, 10, -5), Point(-5, 5, 0), Point(5, 5, 0)] # Fontes de luz
 
             # Parâmetros de Phong
-            ambiental_color_light = np.array([255,255,255])
-            Il = [np.array([255,255,255])]
+            ambiental_color_light = np.array([50,50,50])
+            Il = [np.array([255, 255, 255]), np.array([255, 255, 200]), np.array([200, 200, 255])]
 
             R_arr = [] # Inicilializando vetores de reflexão
             light_vectors_arr = [] # Inicializando array de vetores para luz
@@ -52,13 +51,13 @@ class Renderer:
                     closest_t = t
                     # Cálculo do vetor normal do ponto 
                     intersection_point = ray.origin + ray.direction * t
-                    normal_vector = normalize(intersection_point - obj.center)
+                    normal_vector = (intersection_point - obj.center).normalize()
 
                     # Definindo e normalizando os vetores dos arrays:
                     for i in range(len(light_points_arr)):
-                        light_vector = normalize(light_points_arr[i] - intersection_point)
+                        light_vector = (light_points_arr[i] - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = normalize(2 * np.dot(normal_vector, light_vector) * normal_vector - light_vector)
+                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
                     # Cálculo da cor do pixel
@@ -70,8 +69,9 @@ class Renderer:
                         Od=obj.color,
                         N=normal_vector,
                         L=light_vectors_arr,
+                        ks=obj.k_specular,
                         R=R_arr,
-                        V=normalize(ray.origin - intersection_point),
+                        V=(ray.origin - intersection_point).normalize(),
                         n=obj.n
                     )
                     # Atualizando a cor mais próxima
@@ -86,15 +86,15 @@ class Renderer:
                     intersection_point = ray.origin + ray.direction * t
                     normal_vector = obj.normal
                     # Verificação se a normal aponta para a direção certa
-                    cos = np.dot(normal_vector, ray.direction)
+                    cos = normal_vector.dot_product(ray.direction)
                     if cos < 0:
                         normal_vector = normal_vector * -1
 
                     # Definindo e normalizando os vetores dos arrays:
                     for i in range(len(light_points_arr)):
-                        light_vector = normalize(light_points_arr[i] - intersection_point)
+                        light_vector = (light_points_arr[i] - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = normalize(2 * np.dot(normal_vector, light_vector) * normal_vector - light_vector)
+                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
                     # Cálculo da cor do pixel
@@ -106,8 +106,9 @@ class Renderer:
                         Od=obj.color,
                         N=normal_vector,
                         L=light_vectors_arr,
+                        ks=obj.k_specular,
                         R=R_arr,
-                        V=normalize(ray.origin - intersection_point),
+                        V=(ray.origin - intersection_point).normalize(),
                         n=obj.n
                     )
                     # Atualizando a cor mais próxima
@@ -121,15 +122,15 @@ class Renderer:
                     # Cálculo do vetor normal do ponto 
                     intersection_point = ray.origin + ray.direction * t
                     # Verificação se a normal aponta para a direção certa
-                    cos = np.dot(normal_vector, ray.direction)
+                    cos = normal_vector.dot_product(ray.direction)
                     if cos < 0:
                         normal_vector = normal_vector * -1
 
                     # Definindo e normalizando os vetores dos arrays:
                     for i in range(len(light_points_arr)):
-                        light_vector = normalize(light_points_arr[i] - intersection_point)
+                        light_vector = (light_points_arr[i] - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = normalize(2 * np.dot(normal_vector, light_vector) * normal_vector - light_vector)
+                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
                     # Cálculo da cor do pixel
@@ -141,8 +142,9 @@ class Renderer:
                         Od=obj.color,
                         N=normal_vector,
                         L=light_vectors_arr,
+                        ks=obj.k_specular,
                         R=R_arr,
-                        V=normalize(ray.origin - intersection_point),
+                        V=(ray.origin - intersection_point).normalize(),
                         n=obj.n
                     )
                     # Atualizando a cor mais próxima

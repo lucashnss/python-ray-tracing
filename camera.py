@@ -42,22 +42,3 @@ class Camera:
             + self.u.scale(y)                 # Adciona um deslocamento vertical ao ponto no plano de projeção
         ).normalize()
         return Ray(self.camera_point, direction)
-
-    # def ray_casting(self, entities, depth):
-    #     """Ray Casting Method"""
-
-    #     image = np.zeros((self.hres, self.vres, 3), dtype=np.uint8) # Cria uma imagem preta.
-
-
-    #     for i in range(self.vres):
-    #         for j in range(self.hres):
-    #             print(  self.w.scale(depth) +
-    #                     self.v.scale(2 * 0.5 * (j / self.vres - 0.5)) +
-    #                     self.u.scale(2 * 0.5 * (i / self.hres - 0.5)))
-
-    #             image[i,j]= (251,198,207)
-
-
-    #     cv.imshow("image", image)
-    #     cv.waitKey(0)
-    #     cv.destroyAllWindows("i")

@@ -2,6 +2,20 @@ import math
 from point import Point
 
 class Sphere:
+    """
+        Representa uma esfera em um espaço tridimensional.
+        Atributos:
+            center (Point): Centro da esfera.
+            radius (float): Raio da esfera.
+            color (tuple): Cor da esfera.
+            k_ambient (float): Coeficiente de reflexão ambiental.
+            k_diffuse (float): Coeficiente de reflexão difusa.
+            k_specular (float): Coeficiente de reflexão especular.
+            k_reflection (float): Coeficiente de reflexão.
+            k_refraction (float): Coeficiente de refração.
+            refraction_index (float): Índice de refração.
+            n (int): Expoente da componente especular.
+    """
     def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, 
                 refraction_index, n):
         self.type = "Sphere"

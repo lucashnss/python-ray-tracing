@@ -2,7 +2,6 @@ import numpy as np
 from vector import Vector
 
 class Point:
-
     """
     Representa um ponto em um espaço tridimensional.
 

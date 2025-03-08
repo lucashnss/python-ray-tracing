@@ -39,7 +39,7 @@ class Mesh:
 
 
         normal = a0.cross_product(a1)
-        plane = Plane(v0, normal, (0, 0, 255)) # plano do triângulo
+        plane = Plane(v0, normal, (0, 0, 255), k_ambient=0.1, k_diffuse=0.7, k_specular=0.5, k_reflection=0.3, k_refraction=0.0, refraction_index=1.0, n=50) # plano do triângulo
         t = plane.intersect(ray)
 
     # intersecção do raio com o plano
@@ -90,4 +90,5 @@ def apply_affine_transformation(mesh: Mesh, transformation_matrix: np.ndarray) -
         vertice_list_transformed.append(Point(result[0], result[1], result[2]))
 
     return Mesh(mesh.n_triangles, mesh.n_vertices, vertice_list_transformed.copy(), mesh.triples_list, mesh.normal_list,
-                mesh.vertices_normal_list, mesh.colors_normalized_list, mesh.color)
+                mesh.vertices_normal_list, mesh.colors_normalized_list, mesh.color, mesh.k_ambient, mesh.k_diffuse,
+                mesh.k_specular, mesh.k_reflection, mesh.k_refraction, mesh.IOR, mesh.n)
