@@ -97,7 +97,7 @@ class Renderer:
                     normal_vector = obj.normal
                     # Verificação se a normal aponta para a direção certa
                     cos = normal_vector.dot_product(ray.direction)
-                    if cos < 0:
+                    if cos > 0:
                         normal_vector = normal_vector * -1
 
                     # Definindo e normalizando os vetores dos arrays:
@@ -134,7 +134,7 @@ class Renderer:
                     intersection_point = ray.origin + ray.direction * t
                     # Verificação se a normal aponta para a direção certa
                     cos = normal_vector.dot_product(ray.direction)
-                    if cos < 0:
+                    if cos > 0:
                         normal_vector = normal_vector * -1
 
                     # Definindo e normalizando os vetores dos arrays:

@@ -52,7 +52,7 @@ def main():
     plane = Plane(
         point=Point(-10, 0, 0),
         normal=Vector(1,0 , 0),
-       color=np.array([0, 0, 255]),
+        color=np.array([0, 0, 255]),
         k_ambient=0.2,
         k_diffuse=0.7,
         k_specular=0.3,
@@ -61,8 +61,6 @@ def main():
         refraction_index=1.0,
         n=30
     )
-
-
 
     # mesh = Mesh(
     #     n_triangles=3,
@@ -116,7 +114,7 @@ def main():
     light1 = Light(Point(20,20,3), 10)
     objects = [sphere1, sphere2, plane]
     lights = [light1]
-    renderer = Renderer(camera, objects, lights )
+    renderer = Renderer(camera, objects, lights)
     renderer.render()
 
 if __name__ == "__main__":
