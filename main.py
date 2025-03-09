@@ -111,9 +111,14 @@ def main():
 
     # for vertex in triangleTransformed.vertice_list:
         # print(f"vertex {vertex.array()}")
-    light1 = Light(Point(20,20,3), 10)
+    
     objects = [sphere1, sphere2, plane]
+    
+    # Luzes
+    light1 = Light(Point(20,20,3), np.array([255, 255, 255]))
     lights = [light1]
+
+    # Cria o renderizador
     renderer = Renderer(camera, objects, lights)
     renderer.render()
 

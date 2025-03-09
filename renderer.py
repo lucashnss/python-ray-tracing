@@ -43,12 +43,9 @@ class Renderer:
         closest_color = np.array([0,0,0])
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
-            light_points_arr = [Point(0, 10, -5), Point(-5, 5, 0), Point(5, 5, 0)] # Fontes de luz
-
             # Parâmetros de Phong
-            ambiental_color_light = np.array([0,0,0])
-            Il = [np.array([255, 255, 255])]
-
+            ambiental_color_light = np.array([50, 50, 50])
+            Il = [] # Inicizalizando array da intensidade das luzes
             R_arr = [] # Inicilializando vetores de reflexão
             light_vectors_arr = [] # Inicializando array de vetores para luz
 
@@ -68,6 +65,8 @@ class Renderer:
                         light_vectors_arr.append(light_vector)
                         reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
+
+                        Il.append(light.intensity)
 
                     # Cálculo da cor do pixel
                     final_color = phong(
@@ -107,6 +106,8 @@ class Renderer:
                         reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
+                        Il.append(light.intensity)
+
                     # Cálculo da cor do pixel
                     final_color = phong(
                         ka=obj.k_ambient,
@@ -143,6 +144,8 @@ class Renderer:
                         light_vectors_arr.append(light_vector)
                         reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
                         R_arr.append(reflected_vector)
+
+                        Il.append(light.intensity)
 
                     # Cálculo da cor do pixel
                     final_color = phong(
