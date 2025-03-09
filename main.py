@@ -152,12 +152,13 @@ def main():
 
     # for vertex in triangleTransformed.vertice_list:
         # print(f"vertex {vertex.array()}")
-    
-    objects = [mesh]
-    
+
+    objects = [sphere1, sphere2, sphere3, plane]
+
     # Luzes
-    light1 = Light(Point(5, 5, 5), np.array([255, 255, 255]))
-    lights = [light1]
+    light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))
+    light2 = Light(Point(-5, 5, -10), np.array([255, 255, 255]))
+    lights = [light1, light2]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
