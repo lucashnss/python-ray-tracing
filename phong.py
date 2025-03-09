@@ -20,7 +20,6 @@ def phong(ka, Ia, Il, kd, Od, N, L, ks, R, V, n):
     # Normalização das componentes
     Ia = np.array(Ia)/255.0
     Il = np.array(Il)/255.0
-    Od = np.array(Od)/255.0
 
     # Componente Ambiental
     environmental_component = ka * Ia

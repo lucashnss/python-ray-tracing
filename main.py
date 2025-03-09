@@ -25,7 +25,7 @@ def main():
     sphere1 = Sphere(
         center=Point(-2.5, 0, -1),
         radius=2,
-        color=np.array([255, 0, 0]),
+        color=np.array([1, 0, 0]),
         k_ambient=0.2,
         k_diffuse=0.7,
         k_specular=0.3,
@@ -38,7 +38,7 @@ def main():
     sphere2 = Sphere(
         center=Point(2, 0, -1),
         radius=2.5,
-        color=np.array([0, 0, 255]),
+        color=np.array([0, 0, 1]),
         k_ambient=0.2,
         k_diffuse=0.7,
         k_specular=0.3,
@@ -52,7 +52,7 @@ def main():
     plane = Plane(
     point=Point(0, -1, 0),
     normal=Vector(0, 10, 0),
-       color=np.array([0, 0, 255]),
+       color=np.array([0, 1, 0]),
         k_ambient=0.2,
         k_diffuse=0.7,
         k_specular=0.3,
