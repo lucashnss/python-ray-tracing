@@ -117,9 +117,9 @@ def main():
     # Luzes
     light1 = Light(Point(20,20,3), np.array([255, 255, 255]))
     lights = [light1]
-
+    ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
-    renderer = Renderer(camera, objects, lights)
+    renderer = Renderer(camera, objects, lights, ambiental_color_light)
     renderer.render()
 
 if __name__ == "__main__":

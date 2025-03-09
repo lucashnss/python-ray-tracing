@@ -16,13 +16,15 @@ class Renderer:
         camera: câmera
         objects: objetos a serem renderizados
     """
-    def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh, lights: List[Light]):
+    def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh, lights: List[Light], 
+                ambiental_color_light=np.array([0, 0, 0])) -> None:
         self.camera = camera
         self.objects = objects
         self.hres = camera.hres
         self.vres = camera.vres
         self.image = np.zeros((self.vres,self.hres,3), dtype=np.uint8)
         self.lights = lights
+        self.ambiental_color_light = ambiental_color_light
 
     def render(self):
         for i in range(self.vres):
@@ -44,7 +46,6 @@ class Renderer:
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
             # Parâmetros de Phong
-            ambiental_color_light = np.array([50, 50, 50])
             Il = [] # Inicizalizando array da intensidade das luzes
             R_arr = [] # Inicilializando vetores de reflexão
             light_vectors_arr = [] # Inicializando array de vetores para luz
@@ -71,7 +72,7 @@ class Renderer:
                     # Cálculo da cor do pixel
                     final_color = phong(
                         ka=obj.k_ambient,
-                        Ia=ambiental_color_light,
+                        Ia=self.ambiental_color_light,
                         Il=Il,
                         kd=obj.k_diffuse,
                         Od=obj.color,
@@ -111,7 +112,7 @@ class Renderer:
                     # Cálculo da cor do pixel
                     final_color = phong(
                         ka=obj.k_ambient,
-                        Ia=ambiental_color_light,
+                        Ia=self.ambiental_color_light,
                         Il=Il,
                         kd=obj.k_diffuse,
                         Od=obj.color,
@@ -150,7 +151,7 @@ class Renderer:
                     # Cálculo da cor do pixel
                     final_color = phong(
                         ka=obj.k_ambient,
-                        Ia=ambiental_color_light,
+                        Ia=self.ambiental_color_light,
                         Il=Il,
                         kd=obj.k_diffuse,
                         Od=obj.color,
