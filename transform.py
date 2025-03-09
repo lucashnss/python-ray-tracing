@@ -22,24 +22,24 @@ def affine_transform(vector, transform_type="", x=0, y=0, z=0, angle=0):
 
 def translate(x:float, y:float, z: float):
     return np.array([[1, 0, 0, x],
-                    [0, 1, 0, y],
-                    [0, 0, 1, z],
-                    [0, 0, 0, 1]])
+                     [0, 1, 0, y],
+                     [0, 0, 1, z],
+                     [0, 0, 0, 1]])
 
 def rotate_x(angle: float):
     return np.array([[1, 0, 0, 0 ],
-                    [0, math.cos(angle), -math.sin(angle), 0],
-                    [0, math.sin(angle), math.cos(angle), 0],
-                    [0, 0, 0, 1]])
+                     [0, math.cos(angle), -math.sin(angle), 0],
+                     [0, math.sin(angle), math.cos(angle), 0],
+                     [0, 0, 0, 1]])
 
 def rotate_y(angle:float):
     return np.array([[math.cos(angle), 0, math.sin(angle), 0],
-                    [0, 1, 0, 0],
-                    [-math.sin(angle), 0, math.cos(angle), 0],
-                    [0, 0, 0, 1]])
+                     [0, 1, 0, 0],
+                     [-math.sin(angle), 0, math.cos(angle), 0],
+                     [0, 0, 0, 1]])
 
 def rotate_z(angle: float):
     return np.array([[math.cos(angle), -math.sin(angle), 0, 0],
-                    [math.sin(angle), math.cos(angle), 0, 0],
-                    [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                     [math.sin(angle), math.cos(angle), 0, 0],
+                     [0, 0, 1, 0],
+                     [0, 0, 0, 1]])

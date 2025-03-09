@@ -8,6 +8,7 @@ from mesh import Mesh
 from plane import Plane
 from phong import phong
 from point import Point
+from ray import Ray
 
 class Renderer:
     """
@@ -64,10 +65,23 @@ class Renderer:
                     for light in self.lights:
                         light_vector = (light.position - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
+                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
-                        Il.append(light.intensity)
+                        # Checagem de sombra
+                        shadowed = False
+                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
+                        for shadow_obj in self.objects:
+                            if shadow_obj != obj:
+                                shadow_t = shadow_obj.intersect(shadow_Ray)
+                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                    shadowed = True
+                                    break
+                        
+                        if shadowed:
+                            Il.append(np.array([0,0,0]))
+                        else:
+                            Il.append(light.intensity)
 
                     # Cálculo da cor do pixel
                     final_color = phong(
@@ -104,10 +118,23 @@ class Renderer:
                     for light in self.lights:
                         light_vector = (light.position - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
+                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
-                        Il.append(light.intensity)
+                        # Checagem de sombra
+                        shadowed = False
+                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
+                        for shadow_obj in self.objects:
+                            if shadow_obj != obj:
+                                shadow_t = shadow_obj.intersect(shadow_Ray)
+                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                    shadowed = True
+                                    break
+                        
+                        if shadowed:
+                            Il.append(np.array([0,0,0]))
+                        else:
+                            Il.append(light.intensity)
 
                     # Cálculo da cor do pixel
                     final_color = phong(
@@ -143,10 +170,23 @@ class Renderer:
                     for light in self.lights:
                         light_vector = (light.position - intersection_point).normalize()
                         light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector.dot_product(light_vector) * normal_vector - light_vector).normalize()
+                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
                         R_arr.append(reflected_vector)
 
-                        Il.append(light.intensity)
+                        # Checagem de sombra
+                        shadowed = False
+                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
+                        for shadow_obj in self.objects:
+                            if shadow_obj != obj:
+                                shadow_t = shadow_obj.intersect(shadow_Ray)
+                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                    shadowed = True
+                                    break
+                        
+                        if shadowed:
+                            Il.append(np.array([0,0,0]))
+                        else:
+                            Il.append(light.intensity)
 
                     # Cálculo da cor do pixel
                     final_color = phong(
