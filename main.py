@@ -50,8 +50,8 @@ def main():
 
     # Configurações do plano
     plane = Plane(
-        point=Point(-10, 0, 0),
-        normal=Vector(1,0 , 0),
+    point=Point(0, -1, 0),
+    normal=Vector(0, 10, 0),
        color=np.array([0, 0, 255]),
         k_ambient=0.2,
         k_diffuse=0.7,
@@ -61,6 +61,8 @@ def main():
         refraction_index=1.0,
         n=30
     )
+
+
 
 
 
