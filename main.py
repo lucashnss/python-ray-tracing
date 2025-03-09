@@ -21,111 +21,139 @@ def main():
         vres=500
     )
 
-       # Configurações das esferas
+    # Transformações afins 
+
+    # Configurações das esferas
     sphere1 = Sphere(
-        center=Point(0, -3, -0.5),  # Centro da esfera vermelha
-        radius=3,  # Raio da esfera vermelha
-        color=np.array([0, 0, 1]),  # Cor da esfera vermelha (vermelho escuro)
-        k_ambient=0.1,  # Coeficiente de luz ambiente
-        k_diffuse=0.9,  # Coeficiente de luz difusa
-        k_specular=0.3,  # Coeficiente de luz especular (baixo ou zero)
-        k_reflection=0.0,  # Coeficiente de reflexão
-        k_refraction=0.0,  # Coeficiente de refração
-        refraction_index=1.0,  # Índice de refração
-        n=1  # Expoente especular (baixo)
+        center=Point(0, -3, -0.5),  
+        radius=3,  
+        color=np.array([0, 0, 1]),  # Cor da esfera vermelha 
+        k_ambient=0.3, 
+        k_diffuse=0.7,  
+        k_specular=0.3,  
+        k_reflection=0.0,  
+        k_refraction=0.0,
+        refraction_index=1.0,  
+        n=500  
     )
 
     sphere2 = Sphere(
-        center=Point(5, 0, -1),  # Centro da esfera azul
-        radius=2.0,  # Raio da esfera azul
-        color=np.array([1, 0, 0]),  # Cor da esfera azul (azul escuro)
-        k_ambient=0.1,  # Coeficiente de luz ambiente
-        k_diffuse=0.9,  # Coeficiente de luz difusa
-        k_specular=0.2,  # Coeficiente de luz especular (baixo ou zero)
-        k_reflection=0.0,  # Coeficiente de reflexão
-        k_refraction=0.0,  # Coeficiente de refração
-        refraction_index=1.0,  # Índice de refração
-        n=1  # Expoente especular (baixo)
+        center=Point(5, 0, -1),
+        radius=2.0, 
+        color=np.array([1, 0, 0]),  # Cor da esfera azul 
+        k_ambient=0.3, 
+        k_diffuse=0.5,  
+        k_specular=0.5, 
+        k_reflection=0.0,  
+        k_refraction=0.0,  
+        refraction_index=1.0,  
+        n=500  
     )
 
     sphere3 = Sphere(
-        center=Point(-5, 0, -1),  # Centro da esfera verde
-        radius=2,  # Raio da esfera verde
-        color=np.array([0, 1, 0]),  # Cor da esfera verde (verde escuro)
-        k_ambient=0.1,  # Coeficiente de luz ambiente
-        k_diffuse=0.9,  # Coeficiente de luz difusa
-        k_specular=0.2,  # Coeficiente de luz especular (baixo ou zero)
-        k_reflection=0.0,  # Coeficiente de reflexão
-        k_refraction=0.0,  # Coeficiente de refração
-        refraction_index=1.0,  # Índice de refração
-        n=1  # Expoente especular (baixo)
+        center=Point(-5, 0, -1),  
+        radius=2,  
+        color=np.array([0, 1, 0]),  # Cor da esfera verde 
+        k_ambient=0.3, 
+        k_diffuse=0.5, 
+        k_specular=0.5, 
+        k_reflection=0.0, 
+        k_refraction=0.0,  
+        refraction_index=1.0,  
+        n=500  
+    )
+
+    sphere4 = Sphere(
+        center=Point(3, 2, 0),
+        radius=1,
+        color=np.array([1, 1, 0]),  # Cor da esfera cianeza
+        k_ambient=0.3,
+        k_diffuse=0.8,
+        k_specular=0.8,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1.0,
+        n=500
+    )
+
+    sphere5 = Sphere(
+        center=Point(-3, 2, 0),
+        radius=1,
+        color=np.array([1, 1, 1]),  # Cor da esfera branca (branco)
+        k_ambient=0.3,
+        k_diffuse=0.3,
+        k_specular=0.3,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1.0,
+        n=500
     )
 
     # Configurações do plano
     plane = Plane(
-        point=Point(0, -2, 0),  # Ponto no plano
-        normal=Vector(0, 1, 0),  # Vetor normal do plano
+        point=Point(0, -2, 0),  
+        normal=Vector(0, 1, 0), 
         color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
-        k_ambient=0.1,  # Coeficiente de luz ambiente
-        k_diffuse=0.9,  # Coeficiente de luz difusa
-        k_specular=0.1,  # Coeficiente de luz especular (baixo ou zero)
-        k_reflection=0.0,  # Coeficiente de reflexão
-        k_refraction=0.0,  # Coeficiente de refração
-        refraction_index=1.0,  # Índice de refração
-        n=1  # Expoente especular (baixo)
+        k_ambient=0.3,  
+        k_diffuse=0.5,  
+        k_specular=0.5, 
+        k_reflection=0.0, 
+        k_refraction=0.0,  
+        refraction_index=1.0,  
+        n=500
     )
 
-    # mesh = Mesh(
-    #     n_triangles=3,
-    #     n_vertices=8,
-    #     vertice_list=[
-    #         Point(5, 0, -10),
-    #         Point(2, 0, -10),
-    #         Point(2, 5, -10),
-    #         Point(-5, 0, -10),
-    #         Point(-5, 5, -10),
-    #         Point(5, 0, -15),
-    #         Point(-5, 0, -15),
-    #         Point(-5, 5, -15),
-    #     ],
-    #     triples_list=[
-    #         (0, 1, 2),
-    #         (2, 3, 4),
-    #         (0, 3, 7)
-    #     ],
-    #     normal_list=[
-    #         Vector(0, 0, 1),
-    #         Vector(0, 0, 1),
-    #         Vector(0, 0, 1),
-    #         Vector(0, 0, 1)
-    #     ],
-    #     vertices_normal_list=[
-    #         Vector(0, 0, 1),
-    #         Vector(0, 0, 1),
-    #         Vector(0, 0, 1)
-    #     ],
-    #     colors_normalized_list=[
-    #         np.array((255, 0, 0)),
-    #         np.array([255, 0, 0]),
-    #         np.array([255, 0, 0])
-    #     ],
-    #     color=np.array([255, 0, 0]),
-    #     k_ambient=0.3,
-    #     k_diffuse=0.7,
-    #     k_specular=0.6,
-    #     k_reflection=0.2,
-    #     k_refraction=0.0,
-    #     refraction_index=1.0,
-    #     n=30
-    # )
+    mesh = Mesh(
+        n_triangles=3,
+        n_vertices=8,
+        vertice_list=[
+            Point(5, 0, -10),
+            Point(2, 0, -10),
+            Point(2, 5, -10),
+            Point(-5, 0, -10),
+            Point(-5, 5, -10),
+            Point(5, 0, -15),
+            Point(-5, 0, -15),
+            Point(-5, 5, -15),
+        ],
+        triples_list=[
+            (0, 1, 2),
+            (2, 3, 4),
+            (0, 3, 7)
+        ],
+        normal_list=[
+            Vector(0, 0, 1),
+            Vector(0, 0, 1),
+            Vector(0, 0, 1),
+            Vector(0, 0, 1)
+        ],
+        vertices_normal_list=[
+            Vector(0, 0, 1),
+            Vector(0, 0, 1),
+            Vector(0, 0, 1)
+        ],
+        colors_normalized_list=[
+            np.array((1, 0, 0)),
+            np.array([0, 1, 0]),
+            np.array([0, 0, 1])
+        ],
+        color=np.array([1, 0, 0]),
+        k_ambient=0.3,
+        k_diffuse=0.7,
+        k_specular=0.6,
+        k_reflection=0.2,
+        k_refraction=0.0,
+        refraction_index=1.0,
+        n=30
+    )
 
-    # matrix = translate(-10, -10, 0)
-    # triangleTransformed = apply_affine_transformation(triangle, matrix)
+    matrix = translate(-10, -10, 0)
+    triangleTransformed = apply_affine_transformation(mesh, matrix)
 
     # for vertex in triangleTransformed.vertice_list:
         # print(f"vertex {vertex.array()}")
     
-    objects = [sphere1, sphere2, sphere3, plane]
+    objects = [mesh]
     
     # Luzes
     light1 = Light(Point(5, 5, 5), np.array([255, 255, 255]))
