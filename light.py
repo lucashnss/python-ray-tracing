@@ -11,4 +11,3 @@ class Light:
     def __init__(self, position: Point, intensity: np.array):
         self.position = position
         self.intensity = intensity
-

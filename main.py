@@ -125,7 +125,6 @@ def main():
             Vector(0, 0, 1),
             Vector(0, 0, 1),
             Vector(0, 0, 1),
-            Vector(0, 0, 1)
         ],
         vertices_normal_list=[
             Vector(0, 0, 1),
@@ -148,12 +147,12 @@ def main():
     )
 
     matrix = translate(-10, -10, 0)
-    triangleTransformed = apply_affine_transformation(mesh, matrix)
+    meshTransformerd = apply_affine_transformation(mesh, matrix)
 
     # for vertex in triangleTransformed.vertice_list:
         # print(f"vertex {vertex.array()}")
 
-    objects = [sphere1, sphere2, sphere3, plane]
+    objects = [mesh, meshTransformerd]
 
     # Luzes
     light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))
