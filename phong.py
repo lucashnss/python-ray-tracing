@@ -23,7 +23,6 @@ def phong(ka, Ia, Il, kd, Od, N, L, ks, R, V, n):
 
     # Componente Ambiental
     environmental_component = ka * Ia
-
     diffuse_component = np.zeros(3)
     specular_component = np.zeros(3)
 

@@ -51,29 +51,34 @@ class Mesh:
 
 
     def intersect_triangle_plane(self, vertices: List[Point], ray: Ray, triangle_normal: Vector):
+        # Construindo a equação para expressar P em termos de v0 e das arestas a0 e a1
+        # Sabemos que P = αv0 + βv1 + γv2 e α + β + γ = 1 -> α = 1 - β - γ
+        # Assim podemos substituir α na equação de P: P = (1 - β - γ)v0 + βv1 + γv2
+        # P = v0 - βv0 - γv0 + βv1 + γv2 (reorganizando os termos)-> P = v0 + β(v1 - v0) + γ(v2 - v0)
+        # E assim P = v0 + βa0 + γa1 -> P - v0 = βa0 + γa1
+        # Substituindo a2 = P - v0, temos: a2 = βa0 + γa1
         [v0, v1, v2] = vertices
 
         a0: Vector = v1 -  v0 # aresta 0 (vetor)
         a1: Vector = v2 - v0 # aresta 1 (vetor)
 
-
         normal = a0.cross_product(a1)
         plane = Plane(v0, normal, (0, 0, 255), k_ambient=0.1, k_diffuse=0.7, k_specular=0.5, k_reflection=0.3, k_refraction=0.0, refraction_index=1.0, n=50) # plano do triângulo
         t = plane.intersect(ray)
 
-    # intersecção do raio com o plano
+        # intersecção do raio com o plano
         if t is None:
             return None
 
         P =  ray.origin + ray.direction.scale(t)
         a2 = P - v0
-
-        # Construindo a matriz e o vetor para resolver o sistema linear
+        
+        # Lembrando que a2 = βa0 + γa1
+        # Construindo a matriz e o vetor para resolver o sistema linear M * [β, γ] = b
         M = np.array([[a0.dot_product(a0), a0.dot_product(a1)],
                     [a0.dot_product(a1), a1.dot_product(a1)]])
         b = np.array([a2.dot_product(a0), a2.dot_product(a1)])
 
-        # Resolvendo o sistema linear M * [v, w] = b
         barycentric_coords = np.linalg.solve(M, b)
         alpha, beta = barycentric_coords
         gamma = 1 - alpha - beta
