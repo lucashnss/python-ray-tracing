@@ -1,4 +1,12 @@
-class Plane:
+from .object import Object
+from point import Point  
+from vector import Vector 
+from ray import Ray     
+from typing import Optional
+import numpy as np
+
+
+class Plane(Object):
     """
         Representa um plano em um espaço tridimensional.
         Atributos:
@@ -14,27 +22,22 @@ class Plane:
             n (int): Expoente da componente especular.
     """
 
-    def __init__(self, point, normal, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
+    def __init__(self, point: Point, normal: Vector, color: np.ndarray, k_ambient: float, 
+                 k_diffuse: float, k_specular: float, k_reflection: float, k_refraction: float, 
+                 refraction_index: float, n:int):
+        super().__init__(color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n)
         self.type = "Plane"
         self.point = point # Ponto no plano
-        self.normal = normal # Vetor normal do plano
-        self.color = color # Cor do plano
-        self.k_ambient = k_ambient
-        self.k_diffuse = k_diffuse
-        self.k_specular = k_specular
-        self.k_reflection = k_reflection
-        self.k_refraction = k_refraction
-        self.IOR = refraction_index
-        self.n = n
+        self.normal_vector = normal # Vetor normal do plano
 
     def __str__(self):
-        return f"Plane: {self.point} {self.normal} {self.color}"
+        return f"Plane: {self.point} {self.normal_vector} {self.color}"
 
-    def normal(self, point):
+    def normal(self, point: Point) -> Vector:
         """Normal Method"""
-        return self.normal
+        return self.normal_vector
 
-    def intersect(self, ray):
+    def intersect(self, ray: Ray) -> Optional[float]:
         """Intersect Method"""
         # Intersecção de raio com plano é dado por
         # t = N * (Po - O)/ N * D
@@ -45,7 +48,7 @@ class Plane:
         # N • O + N • t * D = N • Po
         # t = N • Po - N • O/  N • D
         # t = N • (Po - O)/ (N • D)
-        denominator = self.normal.dot_product(ray.direction) # N • D
+        denominator = self.normal_vector.dot_product(ray.direction) # N • D
 
         # se N * D = 0 então o raio e o plano são paralelos.
         # 1e - 6 é um arredondamento por conta da imprecisão dos cálculos com número flutuante (1e-6 = 10-6)
@@ -54,7 +57,7 @@ class Plane:
             return None
 
         direction = self.point - ray.origin  # (Po - O)
-        t = self.normal.dot_product(direction)/denominator # N * (Po - O) / N * D
+        t = self.normal_vector.dot_product(direction)/denominator # N * (Po - O) / N * D
         # Caso em que a intersecção ocorre atrás da câmera
         if t < 0:
             return None

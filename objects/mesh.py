@@ -1,12 +1,14 @@
 from typing import List
 import numpy as np
-from plane import Plane
+from .plane import Plane
 from point import Point
 from ray import Ray
 from vector import Vector
+from typing import Optional
+from .object import Object
 
 
-class Mesh:
+class Mesh(Object):
     """
         Classe que representa uma malha poligonal.
         Argumentos: 
@@ -27,8 +29,10 @@ class Mesh:
         n: expoente de Phong
     """
     def __init__(self, n_triangles: int, n_vertices: int, vertice_list: List[Point], triples_list,
-                 normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, color,
-                 k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n):
+                 normal_list: List[Vector], vertices_normal_list: List[Vector], colors_normalized_list, 
+                 color: np.ndarray, k_ambient: float, k_diffuse: float, k_specular: float, 
+                 k_reflection: float, k_refraction: float, refraction_index: float, n:int):
+        super().__init__(color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n)
         self.type =  "Mesh"
         self.n_triangles = n_triangles
         self.n_vertices = n_vertices
@@ -37,20 +41,12 @@ class Mesh:
         self.normal_list = normal_list
         self.vertices_normal_list = vertices_normal_list
         self.colors_normalized_list = colors_normalized_list
-        self.color = color
-        self.k_ambient = k_ambient
-        self.k_diffuse = k_diffuse
-        self.k_specular = k_specular
-        self.k_reflection = k_reflection
-        self.k_refraction = k_refraction
-        self.IOR = refraction_index
-        self.n = n
 
     def __str__(self):
         return f"Mesh: {self.n_triangles}, {self.n_vertices}, {self.vertice_list}, {self.triples}, {self.normal_list}, {self.vertices_normal_list}, {self.colors_normalized_list}"
 
 
-    def intersect_triangle_plane(self, vertices: List[Point], ray: Ray, triangle_normal: Vector):
+    def intersect_triangle_plane(self, vertices: List[Point], ray: Ray, triangle_normal: Vector) -> Optional[float]:
         # Construindo a equação para expressar P em termos de v0 e das arestas a0 e a1
         # Sabemos que P = αv0 + βv1 + γv2 e α + β + γ = 1 -> α = 1 - β - γ
         # Assim podemos substituir α na equação de P: P = (1 - β - γ)v0 + βv1 + γv2
@@ -88,7 +84,7 @@ class Mesh:
 
         return None  # Interseção fora do triângulo
 
-    def intersect(self, ray: Ray):
+    def intersect(self, ray: Ray) -> Optional[float]:
         closest_t = float('inf')
         closest_normal = None # Armazenará a normal do triângulo mais próximo
 
@@ -102,8 +98,13 @@ class Mesh:
                 self.color = color
                 closest_t = t
                 closest_normal = self.normal_list[index] # Armazena a normal do triângulo intersecionado
+        
+        self.closest_normal = closest_normal # Guarda a normal do triângulo mais próximo
 
-        return closest_t, closest_normal
+        return closest_t if closest_t != float('inf') else None
+
+    def normal(self, point: Point) -> Vector:
+        return self.closest_normal
 
 def apply_affine_transformation(mesh: Mesh, transformation_matrix: np.ndarray) -> Mesh:
     vertice_list_transformed: List[Point] = []

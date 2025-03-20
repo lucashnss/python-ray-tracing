@@ -1,7 +1,13 @@
 import math
-from point import Point
+from .object import Object
+from point import Point  
+from vector import Vector 
+from ray import Ray     
+from typing import Optional
+import numpy as np
 
-class Sphere:
+
+class Sphere(Object):
     """
         Representa uma esfera em um espaço tridimensional.
         Atributos:
@@ -16,24 +22,18 @@ class Sphere:
             refraction_index (float): Índice de refração.
             n (int): Expoente da componente especular.
     """
-    def __init__(self, center: "Point", radius, color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, 
-                refraction_index, n):
+    def __init__(self, center: Point, radius: float, color: np.ndarray, k_ambient: float, 
+                 k_diffuse: float, k_specular: float, k_reflection: float, k_refraction: float, 
+                 refraction_index: float, n:int):
+        super().__init__(color, k_ambient, k_diffuse, k_specular, k_reflection, k_refraction, refraction_index, n)
         self.type = "Sphere"
         self.center = center
         self.radius = radius
-        self.color = color
-        self.k_ambient = k_ambient
-        self.k_diffuse = k_diffuse
-        self.k_specular = k_specular
-        self.k_reflection = k_reflection
-        self.k_refraction = k_refraction
-        self.IOR = refraction_index
-        self.n = n
 
     def __str__(self):
         return f"Sphere: {self.center} {self.radius} {self.color}"
 
-    def intersect(self, ray):
+    def intersect(self, ray: Ray) -> Optional[float]:
         """Intersect Method"""
         # Intersecção de raios com esferas é dado por
         # equação de esfera: (x - cx)** 2 + (y - cy)**2 + (z - cz)**2 = r**2
@@ -74,3 +74,7 @@ class Sphere:
                 return t2
             else:
                 return None     # Ambas as intersecções estão atrás da câmera
+    
+    def normal(self, point: Point) -> Vector:
+        """Normal Method"""
+        return (point - self.center).normalize()

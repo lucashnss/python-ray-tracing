@@ -3,12 +3,12 @@ import numpy as np
 import cv2 as cv
 from camera import Camera
 from light import Light
-from sphere import Sphere
-from mesh import Mesh
-from plane import Plane
+from objects.sphere import Sphere
+from objects.mesh import Mesh
+from objects.plane import Plane
 from phong import phong
-from point import Point
 from ray import Ray
+from vector import Vector
 
 class Renderer:
     """
@@ -46,163 +46,62 @@ class Renderer:
         closest_color = np.array([0,0,0])
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
-            # Parâmetros de Phong
-            Il = [] # Inicizalizando array da intensidade das luzes
-            R_arr = [] # Inicilializando vetores de reflexão
-            light_vectors_arr = [] # Inicializando array de vetores para luz
-
             #  Se o objeto for uma esfera
-            if obj.type == "Sphere":
-                t = obj.intersect(ray)
+            t = obj.intersect(ray)
 
-                if t and t < closest_t:
-                    closest_t = t
-                    # Cálculo do vetor normal do ponto
-                    intersection_point = ray.origin + ray.direction * t
-                    normal_vector = (intersection_point - obj.center).normalize()
+            if t and t < closest_t:
+                closest_t = t
+                # Cálculo do vetor normal do ponto
+                intersection_point = ray.origin + ray.direction * t
+                normal_vector = obj.normal(intersection_point)
 
-                    # Definindo e normalizando os vetores dos arrays:
-                    for light in self.lights:
-                        light_vector = (light.position - intersection_point).normalize()
-                        light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
-                        R_arr.append(reflected_vector)
+                # Verificação se a normal aponta para a direção certa
+                cos = normal_vector.dot_product(ray.direction)
+                if cos > 0:
+                    normal_vector = normal_vector * -1
 
-                        # Checagem de sombra
-                        shadowed = False
-                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
-                        for shadow_obj in self.objects:
-                            if shadow_obj != obj:
-                                shadow_t = shadow_obj.intersect(shadow_Ray)
-                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                    shadowed = True
-                                    break
-                        
-                        if shadowed:
-                            Il.append(np.array([0,0,0]))
-                        else:
-                            Il.append(light.intensity)
+                # Parâmetros de Phong
+                Il = [] # Inicizalizando array da intensidade das luzes
+                R_arr = [] # Inicilializando vetores de reflexão
+                light_vectors_arr = [] # Inicializando array de vetores para luz
 
-                    # Cálculo da cor do pixel
-                    final_color = phong(
-                        ka=obj.k_ambient,
-                        Ia=self.ambiental_color_light,
-                        Il=Il,
-                        kd=obj.k_diffuse,
-                        Od=obj.color,
-                        N=normal_vector,
-                        L=light_vectors_arr,
-                        ks=obj.k_specular,
-                        R=R_arr,
-                        V=(ray.origin - intersection_point).normalize(),
-                        n=obj.n
-                    )
-                    # Atualizando a cor mais próxima
+                # Definindo e normalizando os vetores dos arrays:
+                for light in self.lights:
+                    light_vector = (light.position - intersection_point).normalize()
+                    light_vectors_arr.append(light_vector)
+                    reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
+                    R_arr.append(reflected_vector)
 
-                    closest_color = final_color
-            # Se o objeto for um plano
-            elif obj.type == "Plane":
-                t = obj.intersect(ray)
+                    # Checagem de sombra
+                    shadowed = False
+                    shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
+                    for shadow_obj in self.objects:
+                        if shadow_obj != obj:
+                            shadow_t = shadow_obj.intersect(shadow_Ray)
+                            if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                shadowed = True
+                                break
+                    
+                    if shadowed:
+                        Il.append(np.array([0,0,0]))
+                    else:
+                        Il.append(light.intensity)
 
-                if t and t < closest_t:
-                    closest_t = t
-                    # Cálculo do vetor normal do ponto
-                    intersection_point = ray.origin + ray.direction * t
-                    normal_vector = obj.normal
-                    # Verificação se a normal aponta para a direção certa
-                    cos = normal_vector.dot_product(ray.direction)
-                    if cos > 0:
-                        normal_vector = normal_vector * -1
+                # Cálculo da cor do pixel
+                final_color = phong(
+                    ka=obj.k_ambient,
+                    Ia=self.ambiental_color_light,
+                    Il=Il,
+                    kd=obj.k_diffuse,
+                    Od=obj.color,
+                    N=normal_vector,
+                    L=light_vectors_arr,
+                    ks=obj.k_specular,
+                    R=R_arr,
+                    V=(ray.origin - intersection_point).normalize(),
+                    n=obj.n
+                )
+                # Atualizando a cor mais próxima
 
-                    # Definindo e normalizando os vetores dos arrays:
-                    for light in self.lights:
-                        light_vector = (light.position - intersection_point).normalize()
-                        light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
-                        R_arr.append(reflected_vector)
-
-                        # Checagem de sombra
-                        shadowed = False
-                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
-                        for shadow_obj in self.objects:
-                            if shadow_obj != obj:
-                                shadow_t = shadow_obj.intersect(shadow_Ray)
-                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                    shadowed = True
-                                    break
-                        
-                        if shadowed:
-                            Il.append(np.array([0,0,0]))
-                        else:
-                            Il.append(light.intensity)
-
-                    # Cálculo da cor do pixel
-                    final_color = phong(
-                        ka=obj.k_ambient,
-                        Ia=self.ambiental_color_light,
-                        Il=Il,
-                        kd=obj.k_diffuse,
-                        Od=obj.color,
-                        N=normal_vector,
-                        L=light_vectors_arr,
-                        ks=obj.k_specular,
-                        R=R_arr,
-                        V=(ray.origin - intersection_point).normalize(),
-                        n=obj.n
-                    )
-                    # Atualizando a cor mais próxima
-
-                    closest_color = final_color
-            # Se o objeto for uma malha
-            elif obj.type == "Mesh":
-                t, normal_vector = obj.intersect(ray)
-
-                if t and t < closest_t:
-                    closest_t = t
-                    # Cálculo do vetor normal do ponto
-                    intersection_point = ray.origin + ray.direction * t
-                    # Verificação se a normal aponta para a direção certa
-                    cos = normal_vector.dot_product(ray.direction)
-                    if cos > 0:
-                        normal_vector = normal_vector * -1
-
-                    # Definindo e normalizando os vetores dos arrays:
-                    for light in self.lights:
-                        light_vector = (light.position - intersection_point).normalize()
-                        light_vectors_arr.append(light_vector)
-                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
-                        R_arr.append(reflected_vector)
-
-                        # Checagem de sombra
-                        shadowed = False
-                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
-                        for shadow_obj in self.objects:
-                            if shadow_obj != obj:
-                                shadow_t, _= shadow_obj.intersect(shadow_Ray)
-                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                    shadowed = True
-                                    break
-                        
-                        if shadowed:
-                            Il.append(np.array([0,0,0]))
-                        else:
-                            Il.append(light.intensity)
-
-                    # Cálculo da cor do pixel
-                    final_color = phong(
-                        ka=obj.k_ambient,
-                        Ia=self.ambiental_color_light,
-                        Il=Il,
-                        kd=obj.k_diffuse,
-                        Od=obj.color,
-                        N=normal_vector,
-                        L=light_vectors_arr,
-                        ks=obj.k_specular,
-                        R=R_arr,
-                        V=(ray.origin - intersection_point).normalize(),
-                        n=obj.n
-                    )
-                    # Atualizando a cor mais próxima
-                    closest_color = final_color
-
+                closest_color = final_color
         return closest_color

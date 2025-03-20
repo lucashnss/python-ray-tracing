@@ -1,13 +1,13 @@
 import numpy as np
 from light import Light
-from mesh import Mesh, apply_affine_transformation
+from objects.mesh import Mesh, apply_affine_transformation
 from obj_reader import ObjReader
 from camera import Camera
 from renderer import Renderer
 from point import Point
 from vector import Vector
-from sphere import Sphere
-from plane import Plane
+from objects.sphere import Sphere
+from objects.plane import Plane
 from transform import affine_transform, translate
 
 
@@ -161,7 +161,7 @@ def main():
     # for vertex in triangleTransformed.vertice_list:
     # print(f"vertex {vertex.array()}")
 
-    objects = [sphere1, sphere1_transformed, plane]
+    objects = [mesh, meshTransformerd]
 
     # Luzes
     light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))
