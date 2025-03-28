@@ -31,6 +31,10 @@ class Vector:
         """Permite a multiplicação por escalar à esquerda (escalar * vetor)."""
         return self.__mul__(scalar)
 
+    def __truediv__(self, scalar):
+        """Permite a divisão por escalar (vetor / escalar)."""
+        return Vector(self.x / scalar, self.y / scalar, self.z / scalar)
+    
     def magnitude(self):
         return (self.x**2 + self.y**2 + self.z**2) ** 0.5
 

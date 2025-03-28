@@ -32,9 +32,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.0,
-        k_refraction=0.0,
-        refraction_index=1.0,
+        k_reflection=0.5,
+        k_refraction=0.2,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -48,9 +48,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.0,
-        k_refraction=0.0,
-        refraction_index=1.0,
+        k_reflection=0.5,
+        k_refraction=0.2,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -61,9 +61,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.0,
-        k_refraction=0.0,
-        refraction_index=1.0,
+        k_reflection=0.8,
+        k_refraction=0.8,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -76,7 +76,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.0,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -87,9 +87,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.8,
         k_specular=0.8,
-        k_reflection=0.0,
+        k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.0,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -100,9 +100,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.3,
         k_specular=0.3,
-        k_reflection=0.0,
-        k_refraction=0.0,
-        refraction_index=1.0,
+        k_reflection=1,
+        k_refraction=1,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -114,7 +114,7 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.0,
+        k_reflection=0.5,
         k_refraction=0.0,
         refraction_index=1.0,
         n=500,
@@ -161,7 +161,7 @@ def main():
     # for vertex in triangleTransformed.vertice_list:
     # print(f"vertex {vertex.array()}")
 
-    objects = [mesh, meshTransformerd]
+    objects = [sphere1, sphere2, sphere3, plane]
 
     # Luzes
     light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))

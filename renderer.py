@@ -6,9 +6,8 @@ from light import Light
 from objects.sphere import Sphere
 from objects.mesh import Mesh
 from objects.plane import Plane
-from phong import phong
 from ray import Ray
-from vector import Vector
+import math
 
 class Renderer:
     """
@@ -32,26 +31,108 @@ class Renderer:
             print(f"{(i/self.vres)*100:.2f}%")
             for j in range(self.hres):
                 ray = self.camera.generate_ray(j,i)
-                color = self.trace_ray(ray)
+                color = self.trace_ray(ray, self.objects)
                 self.image[i,j] = color  # A matriz numpy por padrão é image[índice linha, índice coluna]
 
         print('100.00% - Concluído!')
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows()
+    
+    def phong(self, ka, Ia, Il, kd, Od, N, L, ks, R, V, n, lim_r, k_r, camera_vector, objects, intersection_point, 
+              current_obj, k_t, n_in, n_out, reflection=True, refraction=True, counter_r=0):
+        """
+            ka (entre 0 e 1): coeficiente ambiental
+            Ia (conjunto RGB do tipo [[0,255],[0,255], [0,255]]): cor da luz ambiental
+            Il (array de RGBs do tipo [[0,255], [0,255], [0,255],  ...]) = array com as luzes do ambiente
+            kd (entre 0 e 1): coeficiente de difusão do objeto
+            Od (conjunto RGB do tipo [[0,255],[0,255], [0,255]]): conjunto RGB que representa a cor do objeto
+            N (vetor): vetor normal ao ponto de interseção do objeto com a câmera
+            L (array de vetores): vetores que representam as direções das luzes
+            ks (entre 0 e 1): coeficiente especular do objeto
+            R (array de vetores): vetores que representam as direções dos raios refletidos
+            V (vetor): vetor que representa a direção da câmera
+            n (inteiro): expoente da componente especular do objeto
+            lim_r (inteiro): limite de reflexões
+            k_r (entre 0 e 1): coeficiente de reflexão do objeto
+            camera_vector (vetor): vetor que vem do observador para calcular a reflexão
+            objects (lista de objetos): lista de objetos que podem refletir ou refratar a luz
+            intersection_point (ponto): ponto de interseção do objeto com a câmera
+            current_obj (objeto): objeto atual resultado da intersecção
+            k_t (entre 0 e 1): coeficiente de refração do objeto
+            n_in (inteiro >=0): índice de refração na entrada da superfície
+            n_out (inteiro >= 1): índice de refração na saída da superfície
+            reflection (boolean): indica se o objeto está refletindo a luz
+            refraction (boolean): indica se o objeto está refratando a luz
+            counter_r (inteiro): incrementa em um a cada chamada recursiva de phong
+        Retorna:
+                Um vetor RGB que representa a cor final do objeto
 
-    def trace_ray(self, ray):
+        """
+        # Normalização das componentes
+        Ia = np.array(Ia)/255.0
+        Il = np.array(Il)/255.0
+
+        # Componente Ambiental
+        environmental_component = ka * Ia
+        diffuse_component = np.zeros(3)
+        specular_component = np.zeros(3)
+        reflection_component = np.zeros(3)
+        refraction_component = np.zeros(3)
+
+        for i in range(len(Il)):
+            # Cálculo da componente difusa e da componente especular
+            diffuse_component += kd * Il[i] * max(0, N.dot_product(L[i])) * Od
+            specular_component += ks * Il[i] * max(0, (R[i].dot_product(V))**n)
+
+        if counter_r <= lim_r:
+            # Cálculo da componente de reflexão
+            if reflection and k_r != 0:
+                reflected_vector = (2 * N.dot_product(camera_vector) * N - camera_vector).normalize()
+                reflected_vector = reflected_vector 
+                Ir = self.trace_ray(ray=Ray(intersection_point, reflected_vector), counter_r=counter_r+1, 
+                                    objects=objects, reflection=True, refraction=False)
+                reflection_component = k_r * Ir
+            if refraction and k_t != 0:
+                cos = V.dot_product(N)
+                normal = N
+                ior = current_obj.IOR
+                if cos < 0:
+                    normal = normal * -1
+                    cos = cos * -1
+                    ior = 1/ior
+                
+                delta = 1 - (1 - cos**2) / ior**2
+                if delta >= 0:
+                    refracted_vector = V / (-ior) - normal * (math.sqrt(delta) - cos/ior)
+                    It = self.trace_ray(ray=Ray(intersection_point, refracted_vector), counter_r=counter_r+1, 
+                                        objects=objects, n_in=n_out, reflection=False, refraction=True)
+                    refraction_component = k_t * It
+
+        final_color = environmental_component + diffuse_component + specular_component + reflection_component + refraction_component
+        final_color = np.clip(final_color, 0, 1) * 255
+
+        return final_color
+
+    def trace_ray(self, ray, objects, counter_r=0,  n_in=1, reflection=True, refraction=True):
         # Inicia a cor como preto, assumindo que, inicialmente, o raio não acerta nenhum objeto
         closest_t = float('inf')        # Qualquer distância válida será menor que infinito
         closest_color = np.array([0,0,0])
+
         # Para cada objeto vamos verificar se o raio intersecta este objeto
         for obj in self.objects:
             #  Se o objeto for uma esfera
             t = obj.intersect(ray)
+            
+            if n_in == 1:
+                n_out = obj.IOR
+            else:
+                n_out = 1
 
             if t and t < closest_t:
                 closest_t = t
-                # Cálculo do vetor normal do ponto
+
+            # Cálculo do vetor normal do ponto
                 intersection_point = ray.origin + ray.direction * t
                 normal_vector = obj.normal(intersection_point)
 
@@ -88,7 +169,7 @@ class Renderer:
                         Il.append(light.intensity)
 
                 # Cálculo da cor do pixel
-                final_color = phong(
+                final_color = self.phong(
                     ka=obj.k_ambient,
                     Ia=self.ambiental_color_light,
                     Il=Il,
@@ -99,7 +180,19 @@ class Renderer:
                     ks=obj.k_specular,
                     R=R_arr,
                     V=(ray.origin - intersection_point).normalize(),
-                    n=obj.n
+                    n=obj.n,
+                    lim_r=3,
+                    k_r=obj.k_reflection,
+                    camera_vector=ray.direction.normalize(),
+                    objects=objects,
+                    intersection_point=intersection_point,
+                    current_obj=obj,
+                    counter_r=counter_r,
+                    k_t=obj.k_refraction,
+                    reflection=reflection,
+                    refraction=refraction,
+                    n_in=n_in,
+                    n_out=n_out
                 )
                 # Atualizando a cor mais próxima
 
