@@ -1,6 +1,8 @@
+from objects.mesh import Mesh
 from point import Point
 from vector import Vector
 from color_map import Colormap
+import numpy as np
 import os
 
 class Face:
@@ -48,8 +50,8 @@ class ObjReader:
                             face_data.append((vertex_index, normal_index))
 
                         face = Face()
-                        face.vertice_indices = [face_data[0][0], face_data[1][0], face_data[2][0]]
-                        face.normal_indices = [face_data[0][1], face_data[1][1], face_data[2][1]]
+                        face.vertice_indices = (face_data[0][0], face_data[1][0], face_data[2][0])
+                        face.normal_indices = Vector(face_data[0][1], face_data[1][1], face_data[2][1])
 
                         if current_material and self.colormap:
                             material = self.colormap.get_material(current_material)
@@ -92,12 +94,33 @@ class ObjReader:
             print(f"d: {face.d}")
             print()
 
+    def create_mesh(self):
+        print("Creating mesh...")
+        return Mesh(
+            n_triangles=len(self.faces),
+            n_vertices=len(self.vertices),
+            vertice_list=self.vertices,
+            triples_list=[face.vertice_indices for face in self.faces],
+            normal_list=[face.normal_indices for face in self.faces],
+            vertices_normal_list=self.normals,
+            colors_normalized_list=[
+                np.array((1, 0, 0)) for face in self.faces for color in enumerate(self.faces)
+            ],
+            color=np.array([1, 0, 0]),
+            k_ambient=0.3,
+            k_diffuse=0.7,
+            k_specular=0.6,
+            k_reflection=0.2,
+            k_refraction=0.0,
+            refraction_index=1.5,
+            n=30
+        )
+
 if __name__ == "__main__":
     reader = ObjReader("inputs/macaco.obj")
     reader.read_file()
 
-    vertices = reader.get_vertices()
-    faces = reader.get_faces()
+    mesh = reader.create_mesh()
 
     print("Vertices:", vertices)
     print("Faces:")
