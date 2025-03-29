@@ -10,6 +10,7 @@ from ray import Ray
 import math
 import concurrent.futures
 from typing import List, Tuple
+import time
 
 class Renderer:
     """
@@ -28,18 +29,25 @@ class Renderer:
         self.lights = lights
         self.ambiental_color_light = ambiental_color_light
         self.rendering = 0
+        self.total_pixels = self.hres * self.vres
+        self.start_time = time.perf_counter()
 
     def _render_chunk(self, start_row: int, end_row: int) -> List[Tuple[int, int, np.ndarray]]:
         """Render a chunk of the image rows"""
         chunk_colors = []
+      
         for i in range(start_row, end_row):
-            self.rendering += 1
-            print(f"Rendering rows: {self.rendering}/{self.vres} ({(self.rendering / self.vres) * 100:.2f}%)")
+            if(i%(end_row - ((end_row -start_row)/2)) == 0):
+                print(f"Rendering row {i}/{end_row} time: {time.perf_counter() - self.start_time:.2f} seconds")
+            
             for j in range(self.hres):
+                self.rendering += 1
                
                 ray = self.camera.generate_ray(j, i)
                 color = self.trace_ray(ray, self.objects)
                 chunk_colors.append((i, j, color))
+        end_time = time.perf_counter()
+        print(f"Time to render chunk: {end_time - self.start_time:.2f} seconds")
         return chunk_colors
 
     def render(self, num_threads=8):
@@ -61,7 +69,7 @@ class Renderer:
         with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
             futures = []
             for start, end in chunks:
-                print(f"Rendering rows {start} to {end}...")
+           
                 future = executor.submit(self._render_chunk, start, end)
                 futures.append(future)
 
@@ -73,7 +81,7 @@ class Renderer:
             for future in concurrent.futures.as_completed(futures):
                 completed += 1
         
-                
+                print(f"{completed}/{total_chunks} chunks completed... {completed / total_chunks * 100:.2f}%")
                 # Update image with chunk results
                 chunk_colors = future.result()
                 for i, j, color in chunk_colors:
@@ -242,7 +250,7 @@ class Renderer:
                         R=R_arr,
                         V=(ray.origin - intersection_point).normalize(),
                         n=obj.n,
-                        lim_r=0,
+                        lim_r=3,
                         k_r=obj.k_reflection,
                         camera_vector=ray.direction.normalize(),
                         objects=objects,

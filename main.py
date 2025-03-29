@@ -120,6 +120,30 @@ def main():
         n=500,
     )
 
+    plane2 = Plane(
+        point=Point(-10, 0, 0),
+        normal=Point(-10, 0, 0) - Point(1,0,0),
+        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1.52,
+        n=500,
+    )
+    plane3 = Plane(
+        point=Point(0, 0, -10),
+        normal=Point(0, 0, -10) - Point(0,0,1),
+        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1.52,
+        n=500,
+    )
     mesh = Mesh(
         n_triangles=3,
         n_vertices=8,
@@ -159,11 +183,11 @@ def main():
     meshTransformerd = apply_affine_transformation(mesh, matrix)
 
 
-    reader = ObjReader("inputs/macaco.obj")
-    reader.read_file()
+    # reader = ObjReader("inputs/macaco.obj")
+    # reader.read_file()
 
-    mesh = reader.create_mesh()
-    objects = [ mesh]
+    # mesh = reader.create_mesh()
+    objects = [ plane, sphere1,  sphere2, sphere3, plane2, plane3  ]
 
     # Luzes
     light1 = Light(Point(100, 10, 50), np.array([255, 255, 255]))
@@ -172,7 +196,7 @@ def main():
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
-    renderer.render(num_threads=8)
+    renderer.render(num_threads=30)
 
 
 if __name__ == "__main__":
