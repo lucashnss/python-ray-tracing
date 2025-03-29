@@ -17,7 +17,7 @@ class Renderer:
         objects: objetos a serem renderizados
     """
     def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh, lights: List[Light], 
-                ambiental_color_light=np.array([0, 0, 0])) -> None:
+                ambiental_color_light=np.array([255, 255, 255])) -> None:
         self.camera = camera
         self.objects = objects
         self.hres = camera.hres
@@ -38,6 +38,22 @@ class Renderer:
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows()
+    
+    def cos_theta(self, n_in, n_out, cos_theta_in):
+        # Calcular o seno do ângulo de incidência
+        sin_theta_in = np.sqrt(1 - cos_theta_in**2)
+
+        # Aplicar a lei de Snell para calcular o seno do ângulo de refração
+        sin_theta_t = (n_in/n_out) * sin_theta_in
+
+        # Verificar se o ângulo de refração é maior que 1, o que indica que ocorre reflexão total
+        if sin_theta_t > 1:
+            return "Reflexão total interna"
+        
+        # Calcular o cosseno do ângulo de refração
+        cos_theta_t = np.sqrt(1 - sin_theta_t**2)
+
+        return cos_theta_t
     
     def phong(self, ka, Ia, Il, kd, Od, N, L, ks, R, V, n, lim_r, k_r, camera_vector, objects, intersection_point, 
               current_obj, k_t, n_in, n_out, reflection=True, refraction=True, counter_r=0):
@@ -70,7 +86,7 @@ class Renderer:
 
         """
         # Normalização das componentes
-        Ia = np.array(Ia)/255.0
+        Ia = Ia/255.0
         Il = np.array(Il)/255.0
 
         # Componente Ambiental
@@ -81,32 +97,28 @@ class Renderer:
         refraction_component = np.zeros(3)
 
         for i in range(len(Il)):
-            # Cálculo da componente difusa e da componente especular
-            diffuse_component += kd * Il[i] * max(0, N.dot_product(L[i])) * Od
-            specular_component += ks * Il[i] * max(0, (R[i].dot_product(V))**n)
+                # Cálculo da componente difusa e da componente especular
+                diffuse_component += kd * Il[i] * max(0, N.dot_product(L[i])) * Od
+                specular_component += ks * Il[i] * max(0, (R[i].dot_product(V))**n)
 
         if counter_r <= lim_r:
             # Cálculo da componente de reflexão
-            if reflection and k_r != 0:
+            if reflection and (k_r != 0):
                 reflected_vector = (2 * N.dot_product(camera_vector) * N - camera_vector).normalize()
-                reflected_vector = reflected_vector 
-                Ir = self.trace_ray(ray=Ray(intersection_point, reflected_vector), counter_r=counter_r+1, 
-                                    objects=objects, reflection=True, refraction=False)
+                reflected_vector = reflected_vector * -1
+                Ir = self.trace_ray(ray=Ray(intersection_point, reflected_vector), objects=objects,counter_r=counter_r+1, 
+                                    reflection=True, refraction=False)
+                Ir = Ir/255.0
                 reflection_component = k_r * Ir
-            if refraction and k_t != 0:
-                cos = V.dot_product(N)
-                normal = N
-                ior = current_obj.IOR
-                if cos < 0:
-                    normal = normal * -1
-                    cos = cos * -1
-                    ior = 1/ior
-                
-                delta = 1 - (1 - cos**2) / ior**2
-                if delta >= 0:
-                    refracted_vector = V / (-ior) - normal * (math.sqrt(delta) - cos/ior)
-                    It = self.trace_ray(ray=Ray(intersection_point, refracted_vector), counter_r=counter_r+1, 
-                                        objects=objects, n_in=n_out, reflection=False, refraction=True)
+            if refraction and (k_t != 0):
+                snell = n_in / n_out
+                cos_theta = N.dot_product(camera_vector)
+                cost_theta_t = self.cos_theta(n_in, n_out, cos_theta)
+                if type(cost_theta_t) != str:
+                    refracted_vector = ((1/snell) * camera_vector - ((cost_theta_t - (1/snell) * cos_theta) * N)).normalize()
+                    It = self.trace_ray(ray=Ray(intersection_point, refracted_vector), objects=objects, counter_r=counter_r+1, 
+                                        n_in=n_out, reflection=False, refraction=True)
+                    It = It/255.0
                     refraction_component = k_t * It
 
         final_color = environmental_component + diffuse_component + specular_component + reflection_component + refraction_component
@@ -129,72 +141,73 @@ class Renderer:
             else:
                 n_out = 1
 
-            if t and t < closest_t:
-                closest_t = t
+            if t:
+                if t >= 0.01 and t < closest_t:
+                    closest_t = t
 
-            # Cálculo do vetor normal do ponto
-                intersection_point = ray.origin + ray.direction * t
-                normal_vector = obj.normal(intersection_point)
+                # Cálculo do vetor normal do ponto
+                    intersection_point = ray.origin + ray.direction * t
+                    normal_vector = (obj.normal(intersection_point)).normalize()
 
-                # Verificação se a normal aponta para a direção certa
-                cos = normal_vector.dot_product(ray.direction)
-                if cos > 0:
-                    normal_vector = normal_vector * -1
+                    # Verificação se a normal aponta para a direção certa
+                    cos = normal_vector.dot_product(ray.direction)
+                    if cos > 0:
+                        normal_vector = normal_vector * -1
 
-                # Parâmetros de Phong
-                Il = [] # Inicizalizando array da intensidade das luzes
-                R_arr = [] # Inicilializando vetores de reflexão
-                light_vectors_arr = [] # Inicializando array de vetores para luz
+                    # Parâmetros de Phong
+                    Il = [] # Inicizalizando array da intensidade das luzes
+                    R_arr = [] # Inicilializando vetores de reflexão
+                    light_vectors_arr = [] # Inicializando array de vetores para luz
 
-                # Definindo e normalizando os vetores dos arrays:
-                for light in self.lights:
-                    light_vector = (light.position - intersection_point).normalize()
-                    light_vectors_arr.append(light_vector)
-                    reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
-                    R_arr.append(reflected_vector)
+                    # Definindo e normalizando os vetores dos arrays:
+                    for light in self.lights:
+                        light_vector = (light.position - intersection_point).normalize()
+                        light_vectors_arr.append(light_vector)
+                        reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
+                        R_arr.append(reflected_vector)
 
-                    # Checagem de sombra
-                    shadowed = False
-                    shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
-                    for shadow_obj in self.objects:
-                        if shadow_obj != obj:
-                            shadow_t = shadow_obj.intersect(shadow_Ray)
-                            if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                shadowed = True
-                                break
-                    
-                    if shadowed:
-                        Il.append(np.array([0,0,0]))
-                    else:
-                        Il.append(light.intensity)
+                        # Checagem de sombra
+                        shadowed = False
+                        shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
+                        for shadow_obj in self.objects:
+                            if shadow_obj != obj:
+                                shadow_t = shadow_obj.intersect(shadow_Ray)
+                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                    shadowed = True
+                                    break
+                        
+                        if shadowed:
+                            Il.append(np.array([0,0,0]))
+                        else:
+                            Il.append(light.intensity)
 
-                # Cálculo da cor do pixel
-                final_color = self.phong(
-                    ka=obj.k_ambient,
-                    Ia=self.ambiental_color_light,
-                    Il=Il,
-                    kd=obj.k_diffuse,
-                    Od=obj.color,
-                    N=normal_vector,
-                    L=light_vectors_arr,
-                    ks=obj.k_specular,
-                    R=R_arr,
-                    V=(ray.origin - intersection_point).normalize(),
-                    n=obj.n,
-                    lim_r=3,
-                    k_r=obj.k_reflection,
-                    camera_vector=ray.direction.normalize(),
-                    objects=objects,
-                    intersection_point=intersection_point,
-                    current_obj=obj,
-                    counter_r=counter_r,
-                    k_t=obj.k_refraction,
-                    reflection=reflection,
-                    refraction=refraction,
-                    n_in=n_in,
-                    n_out=n_out
-                )
-                # Atualizando a cor mais próxima
+                    # Cálculo da cor do pixel
+                    final_color = self.phong(
+                        ka=obj.k_ambient,
+                        Ia=self.ambiental_color_light,
+                        Il=Il,
+                        kd=obj.k_diffuse,
+                        Od=obj.color,
+                        N=normal_vector,
+                        L=light_vectors_arr,
+                        ks=obj.k_specular,
+                        R=R_arr,
+                        V=(ray.origin - intersection_point).normalize(),
+                        n=obj.n,
+                        lim_r=4,
+                        k_r=obj.k_reflection,
+                        camera_vector=ray.direction.normalize(),
+                        objects=objects,
+                        intersection_point=intersection_point,
+                        current_obj=obj,
+                        counter_r=counter_r,
+                        k_t=obj.k_refraction,
+                        reflection=reflection,
+                        refraction=refraction,
+                        n_in=n_in,
+                        n_out=n_out
+                    )
+                    # Atualizando a cor mais próxima
 
-                closest_color = final_color
+                    closest_color = final_color
         return closest_color

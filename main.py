@@ -32,8 +32,8 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.5,
-        k_refraction=0.2,
+        k_reflection=0.7,
+        k_refraction=0.0,
         refraction_index=1.52,
         n=500,
     )
@@ -50,7 +50,7 @@ def main():
         k_specular=0.3,
         k_reflection=0.5,
         k_refraction=0.2,
-        refraction_index=1.52,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -61,9 +61,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.8,
-        k_refraction=0.8,
-        refraction_index=1.52,
+        k_reflection=0.5,
+        k_refraction=0.0,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -76,7 +76,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -85,11 +85,11 @@ def main():
         radius=1,
         color=np.array([1, 1, 0]),  # Cor da esfera cianeza
         k_ambient=0.3,
-        k_diffuse=0.8,
+        k_diffuse=0.6,
         k_specular=0.8,
         k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -102,7 +102,7 @@ def main():
         k_specular=0.3,
         k_reflection=1,
         k_refraction=1,
-        refraction_index=1.52,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -116,7 +116,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.0,
+        refraction_index=1.5,
         n=500,
     )
 
@@ -151,7 +151,7 @@ def main():
         k_specular=0.6,
         k_reflection=0.2,
         k_refraction=0.0,
-        refraction_index=1.0,
+        refraction_index=1.5,
         n=30,
     )
 
