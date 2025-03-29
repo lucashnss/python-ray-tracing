@@ -26,8 +26,8 @@ def main():
 
     # Configurações das esferas
     sphere1 = Sphere(
-        center=Point(0, -3, -0.5),
-        radius=3,
+        center=Point(0, 0, -1),
+        radius=1,
         color=np.array([0, 0, 1]),  # Cor da esfera vermelha
         k_ambient=0.3,
         k_diffuse=0.7,
@@ -55,7 +55,7 @@ def main():
     )
 
     sphere2 = Sphere(
-        center=Point(5, 0, -1),
+        center=Point(4, 0, -2),
         radius=2.0,
         color=np.array([1, 0, 0]),  # Cor da esfera azul
         k_ambient=0.3,
@@ -68,7 +68,7 @@ def main():
     )
 
     sphere3 = Sphere(
-        center=Point(-5, 0, -1),
+        center=Point(-4, 0, -2),
         radius=2,
         color=np.array([0, 1, 0]),  # Cor da esfera verde
         k_ambient=0.3,
@@ -99,7 +99,7 @@ def main():
         color=np.array([1, 1, 1]),  # Cor da esfera branca (branco)
         k_ambient=0.3,
         k_diffuse=0.3,
-        k_specular=0.3,
+        k_specular=0.,
         k_reflection=1,
         k_refraction=1,
         refraction_index=1.52,
@@ -113,10 +113,10 @@ def main():
         color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
         k_ambient=0.3,
         k_diffuse=0.5,
-        k_specular=0.5,
-        k_reflection=0.5,
-        k_refraction=0.5,
-        refraction_index=2.42,
+        k_specular=0.8,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -164,9 +164,9 @@ def main():
     objects = [sphere1, sphere2, sphere3, plane]
 
     # Luzes
-    light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))
-    light2 = Light(Point(-5, 5, -10), np.array([255, 255, 255]))
-    lights = [light1, light2]
+    light1 = Light(Point(100, 300, 50), np.array([255, 255, 255]))
+ 
+    lights = [light1]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
