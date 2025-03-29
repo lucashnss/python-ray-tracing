@@ -16,151 +16,66 @@ class Face:
         self.d = 0
 
 class ObjReader:
-    '''
-        Classe leitora de arquivos .obj. Onde o arquivo contém os vários pontos, normais e faces do objeto. No projeto 
-        trabalhamos com faces triangulares, ou seja, uma face consiste em 3 pontos. 
-
-        No arquivo .obj, temos:
-            - v = pontos
-            - vn = normais
-            - vt = texturas
-            - f = faces
-
-        Nessa classe podem ser obtidas as seguintes informações:
-            - Pontos
-            - Normais
-            - Lista de faces com seus respectivos pontos
-            - Informações de cor, brilho, opacidade, etc.
-
-        Obs: -  Para fins de abstração, as normais de cada ponto são ignoradas e assumimos apenas uma normal para cada face. 
-            -  As texturas também são ignoradas.
-
-        Caso sintam necessidade, podem editar a classe para obter mais informações.
-    '''
-
     def __init__(self, file_path):
         self.file_path = file_path
         self.vertices = []
         self.normals = []
         self.faces = []
-        self.faces_points = []
-        self.cur_material = None
         self.colormap = None
-        self.read_file(file_path)
+        self.read_file()
 
-    def read_file(self, file_path):
-        base_dir = os.path.dirname(file_path)
-        with open(file_path, 'r') as file:
-            for line in file:
+    def read_file(self):
+        try:
+            with open(self.file_path, 'r') as file:
+                current_material = None
+                for line in file:
+                    line = line.strip()
+                    if not line or line.startswith('#'):
+                        continue
 
-                if line.startswith('mtllib '):
-                    file_name = line.split()[1]
-                    mtl_path = os.path.join(base_dir, file_name)
-                    self.colormap = Colormap(mtl_path)
+                    parts = line.split()
+                    if parts[0] == 'v':
+                        self.vertices.append(Point(float(parts[1]), float(parts[2]), float(parts[3])))
+                    elif parts[0] == 'vn':
+                        self.normals.append(Vector(float(parts[1]), float(parts[2]), float(parts[3])))
+                    elif parts[0] == 'f':
+                        face_data = []
+                        for part in parts[1:]:
+                            vertex_data = part.split('//')
+                            vertex_index = int(vertex_data[0]) - 1
+                            normal_index = int(vertex_data[1]) - 1
+                            face_data.append((vertex_index, normal_index))
 
-                elif line.startswith('usemtl '):
-                    material_name = line.split()[1]
-                    self.cur_material = self.colormap.get_material(material_name)
+                        face = Face()
+                        face.vertice_indices = [face_data[0][0], face_data[1][0], face_data[2][0]]
+                        face.normal_indices = [face_data[0][1], face_data[1][1], face_data[2][1]]
 
-                elif line.startswith('v '):
-                    self.vertices.append(Point(*map(float, line[2:].split())))
+                        if current_material and self.colormap:
+                            material = self.colormap.get_material(current_material)
+                            face.ka = material.ka
+                            face.kd = material.kd
+                            face.ks = material.ks
+                            face.ke = material.ke
+                            face.ns = material.ns
+                            face.ni = material.ni
+                            face.d = material.d
 
-                elif line.startswith('vn '):
-                    pass
+                        self.faces.append(face)
+                    elif parts[0] == 'usemtl':
+                        current_material = parts[1]
+                    elif parts[0] == 'mtllib':
+                        mtl_file = os.path.join(os.path.dirname(self.file_path), parts[1])
+                        self.colormap = Colormap(mtl_file)
 
-                elif line.startswith('f '):
-                    face = Face()
-                    face.vertice_indices = list(map(lambda x: int(x.split('/')[0]) - 1, line[2:].split()))
-                    face.normal_indices = list(map(lambda x: int(x.split('/')[2]) - 1, line[2:].split()))
-                    face.ka = self.cur_material.ka
-                    face.kd = self.cur_material.kd
-                    face.ks = self.cur_material.ks
-                    face.ke = self.cur_material.ke
-                    face.ns = self.cur_material.ns
-                    face.ni = self.cur_material.ni
-                    face.d = self.cur_material.d
-                    self.faces.append(face)
-
-            for face in self.faces:
-                face_points = []
-                for vertice_index in face.vertice_indices:
-                    face_points.append(self.vertices[vertice_index])
-                self.faces_points.append(face_points)
-
-    def get_faces_points(self):
-        ''' 
-            Retorna uma lista com as coordenadas dos pontos das faces.
-        '''
-        return self.faces_points
+        except FileNotFoundError:
+            print(f"Arquivo não encontrado: {self.file_path}")
 
     def get_faces(self):
-        ''' 
-            Retorna uma lista com as faces do objeto. Cada face contém:
-                - Índices dos pontos
-                - Índices das normais
-                - Cores (ka, kd, ks, ke)
-                - Brilho (ns)
-                - Índice de refração (ni)
-                - Opacidade (d)
-        '''
         return self.faces
 
-    def get_kd(self):
-        '''
-            Retorna a cor difusa do objeto.
-        '''
-        
-        return self.cur_material.kd
-    
-    def get_ka(self):
-        '''
-            Retorna a cor ambiente do objeto.
-        '''
-        return self.cur_material.ka
-    
-    def get_ks(self):
-        '''
-            Retorna o coeficiente especular do objeto.
-        '''
-
-        return self.cur_material.ks
-    
-    def get_ke(self):
-        '''
-            Retorna a cor emissiva do objeto.
-        '''
-        return self.cur_material.ke
-    
-    def get_ns(self):
-        '''
-            Retorna o brilho do objeto.
-        '''
-        return self.cur_material.ns
-    
-    def get_ni(self):
-        '''
-            Retorna o índice de refração do objeto.
-        '''
-        return self.cur_material.ni
-    
-    def get_d(self):
-        '''
-            Retorna a opacidade do objeto.
-        '''
-        return self.cur_material.d
-
     def get_vertices(self):
-        '''
-            Retorna a lista de vértices do objeto.
-        '''
-        return self.vertices
-
-    def print_faces_points(self):
-        for(enum, face) in enumerate(self.faces_points):
-            print(f"Face {enum}:")
-            for point in face:
-                print(point)
-            print()
+        for (enum, vertex) in enumerate(self.vertices):
+            print(f"Vertex {enum}: ({vertex.x}, {vertex.y}, {vertex.z})")
 
     def print_faces(self):
         for (enum, face) in enumerate(self.faces):
@@ -175,3 +90,14 @@ class ObjReader:
             print(f"Ni: {face.ni}")
             print(f"d: {face.d}")
             print()
+
+if __name__ == "__main__":
+    reader = ObjReader("inputs/icosahedron.obj")
+    reader.read_file()
+
+    vertices = reader.get_vertices()
+    faces = reader.get_faces()
+
+    print("Vertices:", vertices)
+    print("Faces:")
+    reader.print_faces()
