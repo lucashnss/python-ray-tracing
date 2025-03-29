@@ -39,7 +39,7 @@ class Renderer:
         cv.waitKey(0)
         cv.destroyAllWindows()
     
-    def cos_theta(self, n_in, n_out, cos_theta_in):
+    def cos_theta_t(self, n_in, n_out, cos_theta_in):
         # Calcular o seno do ângulo de incidência
         sin_theta_in = np.sqrt(1 - cos_theta_in**2)
 
@@ -47,7 +47,7 @@ class Renderer:
         sin_theta_t = (n_in/n_out) * sin_theta_in
 
         # Verificar se o ângulo de refração é maior que 1, o que indica que ocorre reflexão total
-        if sin_theta_t > 1:
+        if sin_theta_t > 1.000001:
             return "Reflexão total interna"
         
         # Calcular o cosseno do ângulo de refração
@@ -113,7 +113,7 @@ class Renderer:
             if refraction and (k_t != 0):
                 snell = n_in / n_out
                 cos_theta = N.dot_product(camera_vector)
-                cost_theta_t = self.cos_theta(n_in, n_out, cos_theta)
+                cost_theta_t = self.cos_theta_t(n_in, n_out, cos_theta)
                 if type(cost_theta_t) != str:
                     refracted_vector = ((1/snell) * camera_vector - ((cost_theta_t - (1/snell) * cos_theta) * N)).normalize()
                     It = self.trace_ray(ray=Ray(intersection_point, refracted_vector), objects=objects, counter_r=counter_r+1, 
@@ -143,7 +143,7 @@ class Renderer:
 
             if t:
                 if t >= 0.01 and t < closest_t:
-                    closest_t = t
+                    closest_t = t   
 
                 # Cálculo do vetor normal do ponto
                     intersection_point = ray.origin + ray.direction * t
@@ -194,7 +194,7 @@ class Renderer:
                         R=R_arr,
                         V=(ray.origin - intersection_point).normalize(),
                         n=obj.n,
-                        lim_r=4,
+                        lim_r=3,
                         k_r=obj.k_reflection,
                         camera_vector=ray.direction.normalize(),
                         objects=objects,

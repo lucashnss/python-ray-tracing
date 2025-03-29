@@ -32,8 +32,8 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.7,
-        k_refraction=0.0,
+        k_reflection=0.5,
+        k_refraction=0.5,
         refraction_index=1.52,
         n=500,
     )
@@ -48,9 +48,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.5,
-        k_refraction=0.2,
-        refraction_index=1.5,
+        k_reflection=0.7,
+        k_refraction=0.7,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -61,9 +61,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.5,
-        k_refraction=0.0,
-        refraction_index=1.5,
+        k_reflection=0.8,
+        k_refraction=0.2,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -76,7 +76,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.5,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -89,7 +89,7 @@ def main():
         k_specular=0.8,
         k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.5,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -102,7 +102,7 @@ def main():
         k_specular=0.3,
         k_reflection=1,
         k_refraction=1,
-        refraction_index=1.5,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -115,8 +115,8 @@ def main():
         k_diffuse=0.5,
         k_specular=0.5,
         k_reflection=0.5,
-        k_refraction=0.0,
-        refraction_index=1.5,
+        k_refraction=0.5,
+        refraction_index=2.42,
         n=500,
     )
 
