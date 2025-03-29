@@ -170,11 +170,10 @@ class Renderer:
                         shadowed = False
                         shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
                         for shadow_obj in self.objects:
-                            if shadow_obj != obj:
-                                shadow_t = shadow_obj.intersect(shadow_Ray)
-                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                    shadowed = True
-                                    break
+                            shadow_t = shadow_obj.intersect(shadow_Ray)
+                            if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                shadowed = True
+                                break
                         
                         if shadowed:
                             Il.append(np.array([0,0,0]))
