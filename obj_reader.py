@@ -41,9 +41,10 @@ class ObjReader:
                     elif parts[0] == 'f':
                         face_data = []
                         for part in parts[1:]:
-                            vertex_data = part.split('//')
+                            vertex_data = part.split('/')
                             vertex_index = int(vertex_data[0]) - 1
-                            normal_index = int(vertex_data[1]) - 1
+                            normal_index = int(vertex_data[2]) - 1 if len(vertex_data) > 2 else 0 #Adicionado verificação para ver se a normal existe.
+
                             face_data.append((vertex_index, normal_index))
 
                         face = Face()
@@ -92,7 +93,7 @@ class ObjReader:
             print()
 
 if __name__ == "__main__":
-    reader = ObjReader("inputs/icosahedron.obj")
+    reader = ObjReader("inputs/macaco.obj")
     reader.read_file()
 
     vertices = reader.get_vertices()
