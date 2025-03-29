@@ -44,7 +44,7 @@ def main():
         k_specular=0.3,
         k_reflection=0.5,
         k_refraction=0.5,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -60,7 +60,7 @@ def main():
         k_specular=0.3,
         k_reflection=0.7,
         k_refraction=0.7,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -73,7 +73,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.8,
         k_refraction=0.2,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -86,7 +86,7 @@ def main():
         k_specular=0.5,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -99,7 +99,7 @@ def main():
         k_specular=0.8,
         k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -112,7 +112,7 @@ def main():
         k_specular=0.,
         k_reflection=1,
         k_refraction=1,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -126,7 +126,7 @@ def main():
         k_specular=1,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -139,7 +139,7 @@ def main():
         k_specular=1,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
     plane3 = Plane(
@@ -151,7 +151,7 @@ def main():
         k_specular=1,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
     mesh = Mesh(
@@ -198,10 +198,10 @@ def main():
     # reader.read_file()
 
     # mesh = reader.create_mesh()
-    objects = [plane, plane2, plane3, sphere1, sphere2, sphere3]
+    objects = [plane,  sphere1, sphere2, sphere3]
 
     # Luzes
-    light1 = Light(Point(100, 10, 50), np.array([255, 255, 255]))
+    light1 = Light(Point(0, 50, 50), np.array([255, 255, 255]))
   
     lights = [light1]
     ambiental_color_light = np.array([50, 50, 50])

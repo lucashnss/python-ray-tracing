@@ -234,28 +234,32 @@ class Renderer:
             if refraction and k_t != 0:
                 snell = n_in / n_out
                 cos_theta = N.dot_product(camera_vector)
+                if(cos_theta < 0):
+                    cos_theta = -1 * cos_theta
+                    N = N * -1
+                    n_out = 1 / n_out
                 cost_theta_t = self.cos_theta_t(n_in, n_out, cos_theta)
-                if type(cost_theta_t) != str:
-                    refracted_vector = (
-                        (1 / snell) * camera_vector - ((cost_theta_t - (1 / snell) * cos_theta) * N)
-                    ).normalize()
+                delta = 1 - (1 - cos_theta * cos_theta) / (n_out * n_out)
+                if delta >= 0:
+                    refracted_vector = (camera_vector / (-n_out) - N * (math.sqrt(delta) - cos_theta/n_out)).normalize()
                     It = self.trace_ray(
                         ray=Ray(intersection_point, refracted_vector),
-                        objects=objects,
-                        counter_r=nextCounter,
-                        n_in=n_out,
-                        reflection=True,
-                        refraction=True,
-                    )
-                    It = It / 255.0
-                    refraction_component = k_t * It
+                    objects=objects,
+                    counter_r=nextCounter,
+                    n_in=n_out,
+                    reflection=True,
+                    refraction=True,
+                )
+                It = It / 255.0
+                refraction_component = k_t * It
 
         final_color = (
             environmental_component + diffuse_component + specular_component
             + reflection_component + refraction_component
         )
         final_color = np.clip(final_color, 0, 1) * 255
-
+        if((final_color[0] >= 64 and final_color[0] <= 66) and (final_color[1] >= 64 and final_color[1] <= 66) and (final_color[2] >= 116 and final_color[2] <= 118)):
+            print("final_color", final_color)
         return final_color
 
     def trace_ray(self, ray, objects, counter_r=0,  n_in=1, reflection=True, refraction=True):
