@@ -22,6 +22,16 @@ def main():
         vres=500,
     )
 
+    # camera = Camera(
+    #     camera_point=Point(6, 1, 2),
+    #     target_point=Point(
+    #         6, 1, 0),
+    #     vector_up=Vector(0, 1, 0),
+    #     target_distance=1,
+    #     hres=500,
+    #     vres=500,
+    #)
+
     # Transformações afins
 
     # Configurações das esferas
@@ -183,20 +193,21 @@ def main():
     meshTransformerd = apply_affine_transformation(mesh, matrix)
 
 
-    # reader = ObjReader("inputs/macaco.obj")
+    # reader = ObjReader("inputs/icosahedron.obj")
+    # # reader = ObjReader("inputs/macaco.obj")
     # reader.read_file()
 
     # mesh = reader.create_mesh()
-    objects = [ plane, sphere1,  sphere2, sphere3, plane2, plane3  ]
+    objects = [plane, plane2, plane3, sphere1, sphere2, sphere3]
 
     # Luzes
     light1 = Light(Point(100, 10, 50), np.array([255, 255, 255]))
- 
+  
     lights = [light1]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
-    renderer.render(num_threads=30)
+    renderer.render_single_thread()
 
 
 if __name__ == "__main__":

@@ -104,13 +104,13 @@ class ObjReader:
             normal_list=[face.normal_indices for face in self.faces],
             vertices_normal_list=self.normals,
             colors_normalized_list=[
-                np.array((1, 0, 0)) for face in self.faces for color in enumerate(self.faces)
+                np.array((1, 1, 0)) for face in self.faces for color in enumerate(self.faces)
             ],
             color=np.array([1, 0, 0]),
-            k_ambient=0.3,
-            k_diffuse=0.7,
+            k_ambient=1,
+            k_diffuse=1,
             k_specular=0.6,
-            k_reflection=0.2,
+            k_reflection=0,
             k_refraction=0.0,
             refraction_index=1.5,
             n=30
