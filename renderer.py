@@ -17,7 +17,7 @@ class Renderer:
         camera: câmera
         objects: objetos a serem renderizados
     """
-    def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh, lights: List[Light], 
+    def __init__(self, camera: Camera, objects: Sphere | Plane | Mesh, lights: List[Light],
                 ambiental_color_light=np.array([0, 0, 0])) -> None:
         self.camera = camera
         self.objects = objects
@@ -63,7 +63,9 @@ class Renderer:
 
                     # Definindo e normalizando os vetores dos arrays:
                     for light in self.lights:
+
                         light_vector = (light.position - intersection_point).normalize()
+
                         light_vectors_arr.append(light_vector)
                         reflected_vector = (2 * normal_vector * normal_vector.dot_product(light_vector) - light_vector).normalize()
                         R_arr.append(reflected_vector)
@@ -77,7 +79,7 @@ class Renderer:
                                 if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
                                     shadowed = True
                                     break
-                        
+
                         if shadowed:
                             Il.append(np.array([0,0,0]))
                         else:
@@ -97,6 +99,12 @@ class Renderer:
                         V=(ray.origin - intersection_point).normalize(),
                         n=obj.n
                     )
+                    white = (255, 255, 255)
+
+                    if((final_color[0] >= 50) and (final_color[2] >= 50)):
+                        print(f"final_color { final_color}")
+                    # Atualizando a cor mais próxima
+
                     # Atualizando a cor mais próxima
 
                     closest_color = final_color
@@ -130,7 +138,7 @@ class Renderer:
                                 if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
                                     shadowed = True
                                     break
-                        
+
                         if shadowed:
                             Il.append(np.array([0,0,0]))
                         else:
@@ -150,7 +158,8 @@ class Renderer:
                         V=(ray.origin - intersection_point).normalize(),
                         n=obj.n
                     )
-                    # Atualizando a cor mais próxima
+
+
 
                     closest_color = final_color
             # Se o objeto for uma malha
@@ -182,7 +191,7 @@ class Renderer:
                                 if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
                                     shadowed = True
                                     break
-                        
+
                         if shadowed:
                             Il.append(np.array([0,0,0]))
                         else:
