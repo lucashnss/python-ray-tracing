@@ -223,7 +223,7 @@ class Renderer:
                     objects=objects,
                     counter_r=nextCounter,
                     reflection=True,
-                    refraction=True,
+                    refraction=False,
                     n_in=n_out,
                     
                 )
@@ -247,19 +247,17 @@ class Renderer:
                     objects=objects,
                     counter_r=nextCounter,
                     n_in=n_out,
-                    reflection=True,
+                    reflection=False,
                     refraction=True,
                 )
-                It = It / 255.0
-                refraction_component = k_t * It
+                    It = It / 255.0
+                    refraction_component = k_t * It
 
         final_color = (
             environmental_component + diffuse_component + specular_component
             + reflection_component + refraction_component
         )
         final_color = np.clip(final_color, 0, 1) * 255
-        if((final_color[0] >= 64 and final_color[0] <= 66) and (final_color[1] >= 64 and final_color[1] <= 66) and (final_color[2] >= 116 and final_color[2] <= 118)):
-            print("final_color", final_color)
         return final_color
 
     def trace_ray(self, ray, objects, counter_r=0,  n_in=1, reflection=True, refraction=True):
@@ -312,10 +310,11 @@ class Renderer:
                             shadow_t = shadow_obj.intersect(shadow_Ray)
                             if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
                                 shadowed = True
+                                refracted_color = shadow_obj.color
                                 break
                         
                         if shadowed:
-                            Il.append(np.array([0,0,0]))
+                            Il.append(np.array([90,90,90]))
                         else:
                             Il.append(light.intensity)
 

@@ -43,9 +43,9 @@ def main():
         k_diffuse=0.7,
         k_specular=0.3,
         k_reflection=0.5,
-        k_refraction=0.5,
-        refraction_index=1,
-        n=500,
+        k_refraction=0.1,
+        refraction_index=1.52,
+        n=0,
     )
 
     point = Point(0, -3, -0.5)
@@ -58,9 +58,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.7,
-        k_refraction=0.7,
-        refraction_index=1,
+        k_reflection=0,
+        k_refraction=1,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -71,9 +71,9 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.8,
-        k_refraction=0.2,
-        refraction_index=1,
+        k_reflection=1,
+        k_refraction=0,
+        refraction_index=1.52,
         n=500,
     )
 
@@ -87,7 +87,7 @@ def main():
         k_reflection=0.0,
         k_refraction=0.0,
         refraction_index=1,
-        n=500,
+        n=100,
     )
 
     sphere4 = Sphere(
@@ -111,7 +111,7 @@ def main():
         k_diffuse=0.3,
         k_specular=0.,
         k_reflection=1,
-        k_refraction=1,
+        k_refraction=4,
         refraction_index=1,
         n=500,
     )
@@ -198,12 +198,13 @@ def main():
     # reader.read_file()
 
     # mesh = reader.create_mesh()
-    objects = [plane,  sphere1, sphere2, sphere3]
+    objects = [plane, plane2,  sphere1, sphere2, sphere3]
 
     # Luzes
-    light1 = Light(Point(0, 50, 50), np.array([255, 255, 255]))
+   
+    light2 = Light(Point(100, 5, 100), np.array([255, 255, 255]))
   
-    lights = [light1]
+    lights = [light2]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
