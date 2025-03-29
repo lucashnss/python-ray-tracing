@@ -109,11 +109,11 @@ def main():
     # Configurações do plano
     plane = Plane(
         point=Point(0, -2, 0),
-        normal=Vector(0, 1, 0),
+        normal=Point(0, -2, 0) - Point(0,1,0),
         color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
-        k_ambient=0.3,
-        k_diffuse=0.5,
-        k_specular=0.8,
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
         k_reflection=0.0,
         k_refraction=0.0,
         refraction_index=1.52,
@@ -158,19 +158,21 @@ def main():
     matrix = translate(-10, -10, 0)
     meshTransformerd = apply_affine_transformation(mesh, matrix)
 
-    # for vertex in triangleTransformed.vertice_list:
-    # print(f"vertex {vertex.array()}")
 
-    objects = [sphere1, sphere2, sphere3, plane]
+    reader = ObjReader("inputs/macaco.obj")
+    reader.read_file()
+
+    mesh = reader.create_mesh()
+    objects = [ mesh]
 
     # Luzes
-    light1 = Light(Point(100, 300, 50), np.array([255, 255, 255]))
+    light1 = Light(Point(100, 10, 50), np.array([255, 255, 255]))
  
     lights = [light1]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
-    renderer.render()
+    renderer.render(num_threads=8)
 
 
 if __name__ == "__main__":

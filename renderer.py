@@ -8,6 +8,8 @@ from objects.mesh import Mesh
 from objects.plane import Plane
 from ray import Ray
 import math
+import concurrent.futures
+from typing import List, Tuple
 
 class Renderer:
     """
@@ -25,20 +27,64 @@ class Renderer:
         self.image = np.zeros((self.vres,self.hres,3), dtype=np.uint8)
         self.lights = lights
         self.ambiental_color_light = ambiental_color_light
+        self.rendering = 0
 
-    def render(self):
-        for i in range(self.vres):
-            print(f"{(i/self.vres)*100:.2f}%")
+    def _render_chunk(self, start_row: int, end_row: int) -> List[Tuple[int, int, np.ndarray]]:
+        """Render a chunk of the image rows"""
+        chunk_colors = []
+        for i in range(start_row, end_row):
+            self.rendering += 1
+            print(f"Rendering rows: {self.rendering}/{self.vres} ({(self.rendering / self.vres) * 100:.2f}%)")
             for j in range(self.hres):
-                ray = self.camera.generate_ray(j,i)
+               
+                ray = self.camera.generate_ray(j, i)
                 color = self.trace_ray(ray, self.objects)
-                self.image[i,j] = color  # A matriz numpy por padrão é image[índice linha, índice coluna]
+                chunk_colors.append((i, j, color))
+        return chunk_colors
+
+    def render(self, num_threads=8):
+        """
+        Render the scene using multiple threads
+        Args:
+            num_threads: Number of threads to use for rendering
+        """
+        # Calculate chunk size for each thread
+        chunk_size = max(1, self.vres // num_threads)
+        chunks = []
+        
+        # Create chunks of rows to process
+        for i in range(0, self.vres, chunk_size):
+            end = min(i + chunk_size, self.vres)
+            chunks.append((i, end))
+
+        # Process chunks in parallel using ThreadPoolExecutor
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+            futures = []
+            for start, end in chunks:
+                print(f"Rendering rows {start} to {end}...")
+                future = executor.submit(self._render_chunk, start, end)
+                futures.append(future)
+
+            # Track progress
+            completed = 0
+            total_chunks = len(chunks)
+            
+            # Process results as they complete
+            for future in concurrent.futures.as_completed(futures):
+                completed += 1
+        
+                
+                # Update image with chunk results
+                chunk_colors = future.result()
+                for i, j, color in chunk_colors:
+                    self.image[i,j] = color
+                    
 
         print('100.00% - Concluído!')
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows()
-    
+
     def cos_theta_t(self, n_in, n_out, cos_theta_in):
         # Calcular o seno do ângulo de incidência
         sin_theta_in = np.sqrt(1 - cos_theta_in**2)
@@ -147,7 +193,10 @@ class Renderer:
 
                 # Cálculo do vetor normal do ponto
                     intersection_point = ray.origin + ray.direction * t
-                    normal_vector = (obj.normal(intersection_point)).normalize()
+                    if(obj.type == "Mesh"):
+                        normal_vector = obj.closest_normal
+                    else:
+                        normal_vector = (obj.normal(intersection_point)).normalize()
 
                     # Verificação se a normal aponta para a direção certa
                     cos = normal_vector.dot_product(ray.direction)
@@ -193,7 +242,7 @@ class Renderer:
                         R=R_arr,
                         V=(ray.origin - intersection_point).normalize(),
                         n=obj.n,
-                        lim_r=3,
+                        lim_r=0,
                         k_r=obj.k_reflection,
                         camera_vector=ray.direction.normalize(),
                         objects=objects,
@@ -206,7 +255,7 @@ class Renderer:
                         n_in=n_in,
                         n_out=n_out
                     )
-                    # Atualizando a cor mais próxima
+               
 
                     closest_color = final_color
         return closest_color
