@@ -14,28 +14,38 @@ from transform import affine_transform, translate
 def main():
     # Configurações da câmera
     camera = Camera(
-        camera_point=Point(0, 0, 5),
-        target_point=Point(0, 0, 0),
+        camera_point=Point(2, 2, 5),
+        target_point=Point(1, -1, 1),
         vector_up=Vector(0, 1, 0),
         target_distance=1,
         hres=500,
         vres=500,
     )
 
+    # camera = Camera(
+    #     camera_point=Point(6, 1, 2),
+    #     target_point=Point(
+    #         6, 1, 0),
+    #     vector_up=Vector(0, 1, 0),
+    #     target_distance=1,
+    #     hres=500,
+    #     vres=500,
+    #)
+
     # Transformações afins
 
     # Configurações das esferas
     sphere1 = Sphere(
-        center=Point(0, -3, -0.5),
-        radius=3,
+        center=Point(0, 0, -1),
+        radius=1,
         color=np.array([0, 0, 1]),  # Cor da esfera vermelha
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
         k_reflection=0.5,
-        k_refraction=0.5,
+        k_refraction=0.1,
         refraction_index=1.52,
-        n=500,
+        n=0,
     )
 
     point = Point(0, -3, -0.5)
@@ -48,27 +58,27 @@ def main():
         k_ambient=0.3,
         k_diffuse=0.7,
         k_specular=0.3,
-        k_reflection=0.7,
-        k_refraction=0.7,
+        k_reflection=0,
+        k_refraction=1,
         refraction_index=1.52,
         n=500,
     )
 
     sphere2 = Sphere(
-        center=Point(5, 0, -1),
+        center=Point(4, 0, -2),
         radius=2.0,
         color=np.array([1, 0, 0]),  # Cor da esfera azul
         k_ambient=0.3,
         k_diffuse=0.5,
         k_specular=0.5,
-        k_reflection=0.8,
-        k_refraction=0.2,
+        k_reflection=1,
+        k_refraction=0,
         refraction_index=1.52,
         n=500,
     )
 
     sphere3 = Sphere(
-        center=Point(-5, 0, -1),
+        center=Point(-4, 0, -2),
         radius=2,
         color=np.array([0, 1, 0]),  # Cor da esfera verde
         k_ambient=0.3,
@@ -76,8 +86,8 @@ def main():
         k_specular=0.5,
         k_reflection=0.0,
         k_refraction=0.0,
-        refraction_index=1.52,
-        n=500,
+        refraction_index=1,
+        n=100,
     )
 
     sphere4 = Sphere(
@@ -89,7 +99,7 @@ def main():
         k_specular=0.8,
         k_reflection=0.5,
         k_refraction=0.0,
-        refraction_index=1.52,
+        refraction_index=1,
         n=500,
     )
 
@@ -99,27 +109,51 @@ def main():
         color=np.array([1, 1, 1]),  # Cor da esfera branca (branco)
         k_ambient=0.3,
         k_diffuse=0.3,
-        k_specular=0.3,
+        k_specular=0.,
         k_reflection=1,
-        k_refraction=1,
-        refraction_index=1.52,
+        k_refraction=4,
+        refraction_index=1,
         n=500,
     )
 
     # Configurações do plano
     plane = Plane(
         point=Point(0, -2, 0),
-        normal=Vector(0, 1, 0),
+        normal=Point(0, -2, 0) - Point(0,1,0),
         color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
-        k_ambient=0.3,
-        k_diffuse=0.5,
-        k_specular=0.5,
-        k_reflection=0.5,
-        k_refraction=0.5,
-        refraction_index=2.42,
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1,
         n=500,
     )
 
+    plane2 = Plane(
+        point=Point(-10, 0, 0),
+        normal=Point(-10, 0, 0) - Point(1,0,0),
+        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1,
+        n=500,
+    )
+    plane3 = Plane(
+        point=Point(0, 0, -10),
+        normal=Point(0, 0, -10) - Point(0,0,1),
+        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.0,
+        k_refraction=0.0,
+        refraction_index=1,
+        n=500,
+    )
     mesh = Mesh(
         n_triangles=3,
         n_vertices=8,
@@ -158,15 +192,19 @@ def main():
     matrix = translate(-10, -10, 0)
     meshTransformerd = apply_affine_transformation(mesh, matrix)
 
-    # for vertex in triangleTransformed.vertice_list:
-    # print(f"vertex {vertex.array()}")
 
-    objects = [sphere1, sphere2, sphere3, plane]
+    reader = ObjReader("inputs/cubo.obj")
+    # # reader = ObjReader("inputs/macaco.obj")
+    reader.read_file()
+
+    mesh = reader.create_mesh()
+    objects = [plane, sphere2, mesh ]
 
     # Luzes
-    light1 = Light(Point(0, 5, 10), np.array([255, 255, 255]))
-    light2 = Light(Point(-5, 5, -10), np.array([255, 255, 255]))
-    lights = [light1, light2]
+   
+    light2 = Light(Point(50, 50, 50), np.array([255, 255, 255]))
+  
+    lights = [light2]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)

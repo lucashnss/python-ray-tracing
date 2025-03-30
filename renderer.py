@@ -110,15 +110,26 @@ class Renderer:
                                     reflection=True, refraction=False)
                 Ir = Ir/255.0
                 reflection_component = k_r * Ir
-            if refraction and (k_t != 0):
+            if refraction and k_t != 0:
                 snell = n_in / n_out
                 cos_theta = N.dot_product(camera_vector)
+                if(cos_theta < 0):
+                    cos_theta = -1 * cos_theta
+                    N = N * -1
+                    n_out = 1 / n_out
                 cost_theta_t = self.cos_theta_t(n_in, n_out, cos_theta)
-                if type(cost_theta_t) != str:
-                    refracted_vector = ((1/snell) * camera_vector - ((cost_theta_t - (1/snell) * cos_theta) * N)).normalize()
-                    It = self.trace_ray(ray=Ray(intersection_point, refracted_vector), objects=objects, counter_r=counter_r+1, 
-                                        n_in=n_out, reflection=False, refraction=True)
-                    It = It/255.0
+                delta = 1 - (1 - cos_theta * cos_theta) / (n_out * n_out)
+                if delta >= 0:
+                    refracted_vector = (camera_vector / (-n_out) - N * (math.sqrt(delta) - cos_theta/n_out)).normalize()
+                    It = self.trace_ray(
+                        ray=Ray(intersection_point, refracted_vector),
+                    objects=objects,
+                    counter_r=counter_r+1,
+                    n_in=n_out,
+                    reflection=False,
+                    refraction=True,
+                )
+                    It = It / 255.0
                     refraction_component = k_t * It
 
         final_color = environmental_component + diffuse_component + specular_component + reflection_component + refraction_component
@@ -147,7 +158,10 @@ class Renderer:
 
                 # Cálculo do vetor normal do ponto
                     intersection_point = ray.origin + ray.direction * t
-                    normal_vector = (obj.normal(intersection_point)).normalize()
+                    if obj.type == 'Mesh':
+                        normal_vector = obj.closest_normal 
+                    else:
+                        normal_vector = (obj.normal(intersection_point)).normalize()
 
                     # Verificação se a normal aponta para a direção certa
                     cos = normal_vector.dot_product(ray.direction)
@@ -170,11 +184,10 @@ class Renderer:
                         shadowed = False
                         shadow_Ray = Ray(intersection_point + normal_vector * 0.0001, light_vector)
                         for shadow_obj in self.objects:
-                            if shadow_obj != obj:
-                                shadow_t = shadow_obj.intersect(shadow_Ray)
-                                if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
-                                    shadowed = True
-                                    break
+                            shadow_t = shadow_obj.intersect(shadow_Ray)
+                            if shadow_t and (light.position - intersection_point).magnitude() > shadow_t:
+                                shadowed = True
+                                break
                         
                         if shadowed:
                             Il.append(np.array([0,0,0]))
