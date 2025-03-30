@@ -35,6 +35,7 @@ class Renderer:
                 self.image[i,j] = color  # A matriz numpy por padrão é image[índice linha, índice coluna]
 
         print('100.00% - Concluído!')
+        cv.imwrite("output.png", self.image)
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows()
