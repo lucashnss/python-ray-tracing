@@ -8,7 +8,7 @@ import os
 class Face:
     def __init__(self):
         self.vertice_indices = [0, 0, 0]
-        self.normal_indices = [0, 0, 0]
+        self.normal_indices = [0, 0, 0]  # Changed from Vector to list since these are indices
         self.ka = Vector(0, 0, 0)
         self.kd = Vector(0, 0, 0)
         self.ks = Vector(0, 0, 0)
@@ -24,7 +24,6 @@ class ObjReader:
         self.normals = []
         self.faces = []
         self.colormap = None
-        self.read_file()
 
     def read_file(self):
         try:
@@ -51,10 +50,12 @@ class ObjReader:
 
                         face = Face()
                         face.vertice_indices = (face_data[0][0], face_data[1][0], face_data[2][0])
-                        face.normal_indices = Vector(face_data[0][1], face_data[1][1], face_data[2][1])
+                        face.normal_indices = Vector(face_data[0][1], face_data[1][1], face_data[2][1])  # Changed to list assignment
 
                         if current_material and self.colormap:
+
                             material = self.colormap.get_material(current_material)
+                            color = self.colormap.get_color(current_material)
                             face.ka = material.ka
                             face.kd = material.kd
                             face.ks = material.ks
@@ -62,6 +63,8 @@ class ObjReader:
                             face.ns = material.ns
                             face.ni = material.ni
                             face.d = material.d
+                            face.material = material
+                            face.color = color
 
                         self.faces.append(face)
                     elif parts[0] == 'usemtl':
@@ -104,24 +107,26 @@ class ObjReader:
             normal_list=[face.normal_indices for face in self.faces],
             vertices_normal_list=self.normals,
             colors_normalized_list=[
-                np.array((1, 1, 0)) for face in self.faces for color in enumerate(self.faces)
+                np.array([1, 0, 0]) for face in self.faces
             ],
             color=np.array([1, 0, 0]),
-            k_ambient=1,
-            k_diffuse=1,
-            k_specular=0.6,
-            k_reflection=0,
-            k_refraction=0.0,
-            refraction_index=1.5,
-            n=30
+        k_ambient=1,
+        k_diffuse=1,
+        k_specular=1,
+        k_reflection=0.2,
+        k_refraction=0.0,
+        refraction_index=1.52,
+        n=500,
+       
         )
 
 if __name__ == "__main__":
-    reader = ObjReader("inputs/macaco.obj")
+    reader = ObjReader("inputs/icosahedron.obj")
     reader.read_file()
-
+    vertices = reader.get_vertices()
+    faces = reader.get_faces()
     mesh = reader.create_mesh()
 
-    print("Vertices:", vertices)
-    print("Faces:")
+    # print("Vertices:", vertices)
+    # print("Faces:")
     reader.print_faces()

@@ -14,8 +14,8 @@ from transform import affine_transform, translate
 def main():
     # Configurações da câmera
     camera = Camera(
-        camera_point=Point(0, 0, 5),
-        target_point=Point(0, 0, 0),
+        camera_point=Point(2, 2, 5),
+        target_point=Point(1, -1, 1),
         vector_up=Vector(0, 1, 0),
         target_distance=1,
         hres=500,
@@ -193,22 +193,22 @@ def main():
     meshTransformerd = apply_affine_transformation(mesh, matrix)
 
 
-    # reader = ObjReader("inputs/icosahedron.obj")
+    reader = ObjReader("inputs/cubo.obj")
     # # reader = ObjReader("inputs/macaco.obj")
-    # reader.read_file()
+    reader.read_file()
 
-    # mesh = reader.create_mesh()
-    objects = [plane, plane2,  sphere1, sphere2, sphere3]
+    mesh = reader.create_mesh()
+    objects = [plane, sphere2, mesh ]
 
     # Luzes
    
-    light2 = Light(Point(100, 5, 100), np.array([255, 255, 255]))
+    light2 = Light(Point(50, 50, 50), np.array([255, 255, 255]))
   
     lights = [light2]
     ambiental_color_light = np.array([50, 50, 50])
     # Cria o renderizador
     renderer = Renderer(camera, objects, lights, ambiental_color_light)
-    renderer.render_single_thread()
+    renderer.render()
 
 
 if __name__ == "__main__":
