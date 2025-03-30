@@ -112,13 +112,11 @@ class Renderer:
                 Ir = Ir/255.0
                 reflection_component = k_r * Ir
             if refraction and k_t != 0:
-                snell = n_in / n_out
                 cos_theta = N.dot_product(camera_vector)
                 if(cos_theta < 0):
                     cos_theta = -1 * cos_theta
                     N = N * -1
                     n_out = 1 / n_out
-                cost_theta_t = self.cos_theta_t(n_in, n_out, cos_theta)
                 delta = 1 - (1 - cos_theta * cos_theta) / (n_out * n_out)
                 if delta >= 0:
                     refracted_vector = (camera_vector / (-n_out) - N * (math.sqrt(delta) - cos_theta/n_out)).normalize()

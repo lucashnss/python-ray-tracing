@@ -131,13 +131,13 @@ def main():
     )
 
     plane2 = Plane(
-        point=Point(-10, 0, 0),
-        normal=Point(-10, 0, 0) - Point(1,0,0),
+        point=Point(0, 0, -10),
+        normal=Point(0, 0, -10) - Point(0,0,1),
         color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
         k_ambient=1,
         k_diffuse=1,
         k_specular=1,
-        k_reflection=0.0,
+        k_reflection=1,
         k_refraction=0.0,
         refraction_index=1,
         n=500,
@@ -198,7 +198,7 @@ def main():
     reader.read_file()
 
     mesh = reader.create_mesh()
-    objects = [plane, sphere2, mesh ]
+    objects = [plane, sphere2, mesh]
 
     # Luzes
    
