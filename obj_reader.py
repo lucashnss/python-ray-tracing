@@ -93,7 +93,7 @@ class ObjReader:
             print()
 
 if __name__ == "__main__":
-    reader = ObjReader("inputs/macaco.obj")
+    reader = ObjReader("inputs/icosahedron.obj")
     reader.read_file()
 
     vertices = reader.get_vertices()
