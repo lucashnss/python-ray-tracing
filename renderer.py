@@ -108,7 +108,7 @@ class Renderer:
                 reflected_vector = (2 * N.dot_product(camera_vector) * N - camera_vector).normalize()
                 reflected_vector = reflected_vector * -1
                 Ir = self.trace_ray(ray=Ray(intersection_point, reflected_vector), objects=objects,counter_r=counter_r+1, 
-                                    reflection=True, refraction=False)
+                                    reflection=True, refraction=True)
                 Ir = Ir/255.0
                 reflection_component = k_r * Ir
             if refraction and k_t != 0:
@@ -125,7 +125,7 @@ class Renderer:
                     objects=objects,
                     counter_r=counter_r+1,
                     n_in=n_out,
-                    reflection=False,
+                    reflection=True,
                     refraction=True,
                 )
                     It = It / 255.0

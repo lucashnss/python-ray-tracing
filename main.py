@@ -14,8 +14,8 @@ from transform import affine_transform, translate
 def main():
     # Configurações da câmera
     camera = Camera(
-        camera_point=Point(2, 2, 5),
-        target_point=Point(1, -1, 1),
+        camera_point=Point(0,0,5),
+        target_point=Point(0,0,3),
         vector_up=Vector(0, 1, 0),
         target_distance=1,
         hres=500,
@@ -36,40 +36,25 @@ def main():
 
     # Configurações das esferas
     sphere1 = Sphere(
-        center=Point(0, 0, -1),
-        radius=1,
+        center=Point(0, 0,  -2),
+        radius=2,
         color=np.array([0, 0, 1]),  # Cor da esfera vermelha
-        k_ambient=0.3,
-        k_diffuse=0.7,
+        k_ambient=0,
+        k_diffuse=0.1,
         k_specular=0.3,
-        k_reflection=0.5,
-        k_refraction=0.1,
-        refraction_index=1.52,
-        n=0,
-    )
-
-    point = Point(0, -3, -0.5)
-    point_transformed = affine_transform([point.x, point.y, point.z], 'translate', -2, 4, 0)
-
-    sphere1_transformed = Sphere(
-        center=Point(point_transformed[0], point_transformed[1], point_transformed[2]),
-        radius=3,
-        color=np.array([0, 1, 0]),
-        k_ambient=0.3,
-        k_diffuse=0.7,
-        k_specular=0.3,
-        k_reflection=0,
-        k_refraction=1,
-        refraction_index=1.52,
+        k_reflection=0.1,
+        k_refraction=1.0,
+        refraction_index=1.3,
         n=500,
     )
 
+
     sphere2 = Sphere(
-        center=Point(4, 0, -2),
+        center=Point(4, 0, 0),
         radius=2.0,
         color=np.array([1, 0, 0]),  # Cor da esfera azul
         k_ambient=0.3,
-        k_diffuse=0.5,
+        k_diffuse=0,
         k_specular=0.5,
         k_reflection=1,
         k_refraction=0,
@@ -78,7 +63,7 @@ def main():
     )
 
     sphere3 = Sphere(
-        center=Point(-4, 0, -2),
+        center=Point(-4, 0,  3),
         radius=2,
         color=np.array([0, 1, 0]),  # Cor da esfera verde
         k_ambient=0.3,
@@ -90,31 +75,8 @@ def main():
         n=100,
     )
 
-    sphere4 = Sphere(
-        center=Point(3, 2, 0),
-        radius=1,
-        color=np.array([1, 1, 0]),  # Cor da esfera cianeza
-        k_ambient=0.3,
-        k_diffuse=0.6,
-        k_specular=0.8,
-        k_reflection=0.5,
-        k_refraction=0.0,
-        refraction_index=1,
-        n=500,
-    )
 
-    sphere5 = Sphere(
-        center=Point(-3, 2, 0),
-        radius=1,
-        color=np.array([1, 1, 1]),  # Cor da esfera branca (branco)
-        k_ambient=0.3,
-        k_diffuse=0.3,
-        k_specular=0.,
-        k_reflection=1,
-        k_refraction=4,
-        refraction_index=1,
-        n=500,
-    )
+
 
     # Configurações do plano
     plane = Plane(
@@ -133,19 +95,19 @@ def main():
     plane2 = Plane(
         point=Point(0, 0, -10),
         normal=Point(0, 0, -10) - Point(0,0,1),
-        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        color=np.array([0, 1, 0]),  # Cor do plano (amarelo)
         k_ambient=1,
         k_diffuse=1,
         k_specular=1,
-        k_reflection=1,
+        k_reflection=0,
         k_refraction=0.0,
         refraction_index=1,
         n=500,
     )
     plane3 = Plane(
-        point=Point(0, 0, -10),
-        normal=Point(0, 0, -10) - Point(0,0,1),
-        color=np.array([0, 1, 1]),  # Cor do plano (amarelo)
+        point=Point(-8, 0, 0),
+        normal=Point(-8, 0, 0) - Point(1,0,0),
+        color=np.array([1, 1, 0]),  # Cor do plano (amarelo)
         k_ambient=1,
         k_diffuse=1,
         k_specular=1,
@@ -154,6 +116,7 @@ def main():
         refraction_index=1,
         n=500,
     )
+
     mesh = Mesh(
         n_triangles=3,
         n_vertices=8,
@@ -185,7 +148,7 @@ def main():
         k_specular=0.6,
         k_reflection=0.2,
         k_refraction=0.0,
-        refraction_index=1.5,
+        refraction_index=1,
         n=30,
     )
 
@@ -198,11 +161,11 @@ def main():
     reader.read_file()
 
     mesh = reader.create_mesh()
-    objects = [plane, sphere2, mesh]
+    objects = [plane,plane2, plane3, sphere2, sphere1, sphere3,  ]
 
     # Luzes
    
-    light2 = Light(Point(50, 50, 50), np.array([255, 255, 255]))
+    light2 = Light(Point(10, 50, 50), np.array([255, 255, 255]))
   
     lights = [light2]
     ambiental_color_light = np.array([50, 50, 50])
