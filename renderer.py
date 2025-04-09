@@ -157,7 +157,7 @@ class Renderer:
 
                 # Cálculo do vetor normal do ponto
                     intersection_point = ray.origin + ray.direction * t
-                    if obj.type == 'Mesh':
+                    if obj.type == 'Mesh' or obj.type == 'BezierSurface':
                         normal_vector = obj.closest_normal 
                     else:
                         normal_vector = (obj.normal(intersection_point)).normalize()

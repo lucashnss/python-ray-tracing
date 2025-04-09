@@ -1,3 +1,6 @@
+
+from numba import njit
+
 from typing import List
 import numpy as np
 from .plane import Plane
@@ -45,7 +48,7 @@ class Mesh(Object):
     def __str__(self):
         return f"Mesh: {self.n_triangles}, {self.n_vertices}, {self.vertice_list}, {self.triples}, {self.normal_list}, {self.vertices_normal_list}, {self.colors_normalized_list}"
 
-
+  
     def intersect_triangle_plane(self, vertices: List[Point], ray: Ray, triangle_normal: Vector) -> Optional[float]:
         # Construindo a equação para expressar P em termos de v0 e das arestas a0 e a1
         # Sabemos que P = αv0 + βv1 + γv2 e α + β + γ = 1 -> α = 1 - β - γ
