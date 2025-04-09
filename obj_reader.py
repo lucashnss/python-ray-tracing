@@ -64,7 +64,7 @@ class ObjReader:
                             face.ni = material.ni
                             face.d = material.d
                             face.material = material
-                            face.color = color
+                            face.color = np.array([color.x, color.y, color.z])
 
                         self.faces.append(face)
                     elif parts[0] == 'usemtl':
@@ -107,13 +107,13 @@ class ObjReader:
             normal_list=[face.normal_indices for face in self.faces],
             vertices_normal_list=self.normals,
             colors_normalized_list=[
-                np.array([1, 0, 0]) for face in self.faces
+                np.array([face.color[0], face.color[1], face.color[2]]) for face in self.faces
             ],
             color=np.array([1, 0, 0]),
-        k_ambient=1,
-        k_diffuse=1,
-        k_specular=1,
-        k_reflection=0.2,
+        k_ambient=0.5,
+        k_diffuse=0.5,
+        k_specular=0.5,
+        k_reflection=0.0,
         k_refraction=0.0,
         refraction_index=1.52,
         n=500,

@@ -35,6 +35,7 @@ class Renderer:
                 self.image[i,j] = color  # A matriz numpy por padrão é image[índice linha, índice coluna]
 
         print('100.00% - Concluído!')
+        cv.imwrite("output.png", self.image)
         cv.imshow("Ray Tracing", self.image)
         cv.waitKey(0)
         cv.destroyAllWindows()
@@ -107,17 +108,15 @@ class Renderer:
                 reflected_vector = (2 * N.dot_product(camera_vector) * N - camera_vector).normalize()
                 reflected_vector = reflected_vector * -1
                 Ir = self.trace_ray(ray=Ray(intersection_point, reflected_vector), objects=objects,counter_r=counter_r+1, 
-                                    reflection=True, refraction=False)
+                                    reflection=True, refraction=True)
                 Ir = Ir/255.0
                 reflection_component = k_r * Ir
             if refraction and k_t != 0:
-                snell = n_in / n_out
                 cos_theta = N.dot_product(camera_vector)
                 if(cos_theta < 0):
                     cos_theta = -1 * cos_theta
                     N = N * -1
                     n_out = 1 / n_out
-                cost_theta_t = self.cos_theta_t(n_in, n_out, cos_theta)
                 delta = 1 - (1 - cos_theta * cos_theta) / (n_out * n_out)
                 if delta >= 0:
                     refracted_vector = (camera_vector / (-n_out) - N * (math.sqrt(delta) - cos_theta/n_out)).normalize()
@@ -126,7 +125,7 @@ class Renderer:
                     objects=objects,
                     counter_r=counter_r+1,
                     n_in=n_out,
-                    reflection=False,
+                    reflection=True,
                     refraction=True,
                 )
                     It = It / 255.0
