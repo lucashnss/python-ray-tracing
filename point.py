@@ -32,3 +32,11 @@ class Point:
 
     def array(self):
         return np.array([self.x, self.y, self.z])
+    
+    def __mul__(self, scalar):
+        if isinstance(scalar, (int, float)):
+            return Point(self.x * scalar, self.y * scalar, self.z * scalar)
+        raise TypeError("Can only multiply Point by a scalar.")
+
+    def __rmul__(self, scalar):
+        return self.__mul__(scalar)
